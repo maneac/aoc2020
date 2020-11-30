@@ -1,4 +1,4 @@
-name: Rust
+name: Cargo Test
 
 on:
   push:
@@ -10,11 +10,78 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  check:
+    name: Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Cargo Build
-        run: cargo build --verbose
-      - name: Cargo Test
-        run: cargo test --verbose
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install stable actions-rs toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      - name: Run Cargo check
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+  
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install stable actions-rs toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      - name: Cargo Tarpaulin
+        uses: actions-rs/tarpaulin@v0.1
+        with:
+          version: '0.15.0'
+          args: "-- --test-threads 1"
+
+      - name: Upload test coverage to codecov.io
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Archive coverage results
+        uses: actions/upload-artifact@v1
+        with:
+          name: code-coverage-report
+          path: cobertura.xml
+
+  format:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install stable actions-rs toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+          override: true
+
+      - name: Format check
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --all -- --check
+
+      - name: Linting check
+        uses: actions-rs/clippy-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
