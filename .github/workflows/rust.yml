@@ -3,11 +3,7 @@ name: Rust
 on:
   push:
     branches: [ main ]
-<<<<<<< HEAD
   pull_request:
-=======
-  pull_requests:
->>>>>>> dd414cca611667950cb0f70236e39a7dea1cddc5
     branches: [ main ]
 
 env:
