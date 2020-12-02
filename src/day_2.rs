@@ -29,7 +29,9 @@ While it appears you validated the passwords correctly, they don't seem to be wh
 
 The shopkeeper suddenly realizes that he just accidentally explained the password policy rules from his old job at the sled rental place down the street! The Official Toboggan Corporate Policy actually works a little differently.
 
-Each policy actually describes two positions in the password, where 1 means the first character, 2 means the second character, and so on. (Be careful; Toboggan Corporate Policies have no concept of "index zero"!) Exactly one of these positions must contain the given letter. Other occurrences of the letter are irrelevant for the purposes of policy enforcement.
+Each policy actually describes two positions in the password, where 1 means the first character, 2 means the second
+character, and so on. (Be careful; Toboggan Corporate Policies have no concept of "index zero"!) Exactly one of these
+positions must contain the given letter. Other occurrences of the letter are irrelevant for the purposes of policy enforcement.
 
 Given the same example list from above:
 
@@ -53,7 +55,8 @@ pub fn run() {
 
     let input = parse_input(&input_string);
 
-    println!("Part 1: {}", part_1(input));
+    println!("Part 1: {}", part_1(&input));
+    println!("Part 2: {}", part_2(&input));
 }
 
 #[derive(Debug, PartialOrd, PartialEq)]
@@ -111,7 +114,7 @@ fn parse_input(input: &str) -> Vec<Entry> {
     return out;
 }
 
-fn part_1(input: Vec<Entry>) -> usize {
+fn part_1(input: &Vec<Entry>) -> usize {
     return input
         .iter()
         .filter(|entry| {
@@ -125,6 +128,26 @@ fn part_1(input: Vec<Entry>) -> usize {
         .count();
 }
 
+fn part_2(input: &Vec<Entry>) -> usize {
+    return input
+        .iter()
+        .filter(|entry| {
+            return (entry
+                .password
+                .chars()
+                .nth(entry.min as usize - 1)
+                .expect("Invalid minimum bound for entry")
+                .eq(&entry.target))
+                != (entry
+                    .password
+                    .chars()
+                    .nth(entry.max as usize - 1)
+                    .expect("Invalid minimum bound for entry")
+                    .eq(&entry.target));
+        })
+        .count();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -133,7 +156,10 @@ mod tests {
     fn test_parse_input() {
         let input = "1-3 a: abcde
             1-3 b: cdefg
-            2-9 c: ccccccccc";
+            2-9 c: ccccccccc
+            1-10 a: aa
+            11-1 b: aa
+            10-11 c: ab";
         let expected = vec![
             Entry {
                 min: 1,
@@ -152,6 +178,24 @@ mod tests {
                 max: 9,
                 target: 'c',
                 password: String::from("ccccccccc"),
+            },
+            Entry {
+                min: 1,
+                max: 10,
+                target: 'a',
+                password: String::from("aa"),
+            },
+            Entry {
+                min: 11,
+                max: 1,
+                target: 'b',
+                password: String::from("aa"),
+            },
+            Entry {
+                min: 10,
+                max: 11,
+                target: 'c',
+                password: String::from("ab"),
             },
         ];
 
@@ -182,6 +226,33 @@ mod tests {
         ];
         let expected = 2;
 
-        assert_eq!(expected, part_1(input));
+        assert_eq!(expected, part_1(&input));
+    }
+
+    #[test]
+    fn test_part2_example() {
+        let input = vec![
+            Entry {
+                min: 1,
+                max: 3,
+                target: 'a',
+                password: String::from("abcde"),
+            },
+            Entry {
+                min: 1,
+                max: 3,
+                target: 'b',
+                password: String::from("cdefg"),
+            },
+            Entry {
+                min: 2,
+                max: 9,
+                target: 'c',
+                password: String::from("ccccccccc"),
+            },
+        ];
+        let expected = 1;
+
+        assert_eq!(expected, part_2(&input));
     }
 }
