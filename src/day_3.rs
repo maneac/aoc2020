@@ -134,7 +134,10 @@ fn part_1(input: &Trees) -> usize {
         .trees
         .iter()
         .enumerate()
-        .filter(|(row_num, row)| ((1 << ((3 * row_num) % input.row_len)) as u32 & *row) > 0)
+        .filter(|(row_num, row)| {
+            // D1, R3
+            ((1 << ((3 * row_num) % input.row_len)) as u32 & *row) > 0
+        })
         .count();
 }
 
@@ -144,18 +147,23 @@ fn part_2(input: &Trees) -> usize {
         .iter()
         .enumerate()
         .fold([0usize; 5], |mut acc, (row_num, row)| {
+            // D1, R1
             if ((1 << row_num % input.row_len) as u32 & *row) > 0 {
                 acc[0] += 1;
             }
+            // D1, R3
             if ((1 << ((3 * row_num) % input.row_len)) as u32 & *row) > 0 {
                 acc[1] += 1;
             }
+            // D1, R5
             if ((1 << ((5 * row_num) % input.row_len)) as u32 & *row) > 0 {
                 acc[2] += 1;
             }
+            // D1, R7
             if ((1 << ((7 * row_num) % input.row_len)) as u32 & *row) > 0 {
                 acc[3] += 1;
             }
+            // D2, R1
             if row_num % 2 == 0 && ((1 << ((row_num / 2) % input.row_len)) as u32 & *row) > 0 {
                 acc[4] += 1;
             }
@@ -163,7 +171,6 @@ fn part_2(input: &Trees) -> usize {
         })
         .iter()
         .fold(0usize, |acc, &count| {
-            println!("{}", count);
             if acc == 0 {
                 return count;
             }
