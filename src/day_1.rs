@@ -32,7 +32,7 @@ so the correct answer is 514579.
 
 Of course, your expense report is much larger.
 
---- Part 1 ---
+--- Part One ---
 
 Find the two entries that sum to 2020; what do you get if you multiply them together?
 
