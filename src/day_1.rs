@@ -65,31 +65,30 @@ pub fn run() -> Result<(String, String), Box<dyn Error>> {
 fn parse_input(input_string: &str) -> Vec<i32> {
     let mut out = input_string.lines().fold(Vec::new(), |mut acc, line| {
         let trimmed = line.trim();
-        if trimmed.len() > 0 {
+        if !trimmed.is_empty() {
             acc.push(
                 line.trim()
                     .parse::<i32>()
                     .expect("Unable to parse line as integer"),
             );
         }
-        return acc;
+        acc
     });
-    out.sort();
-    return out;
+    out.sort_unstable();
+    out
 }
 
 fn part1(input: &[i32]) -> Result<i32, &str> {
     for outer_idx in 0..input.len() {
         let outer = input[outer_idx];
-        for inner_idx in outer_idx..input.len() {
-            let inner = input[inner_idx];
+        for inner in input.iter().skip(outer_idx) {
             if outer + inner == 2020 {
                 return Ok(outer * inner);
             }
         }
     }
 
-    return Err("no matching pair found");
+    Err("no matching pair found")
 }
 
 fn part2(input: &[i32]) -> Result<i32, &str> {
@@ -97,8 +96,7 @@ fn part2(input: &[i32]) -> Result<i32, &str> {
         let outer = input[outer_idx];
         for middle_idx in outer_idx..input.len() {
             let middle = input[middle_idx];
-            for inner_idx in middle_idx..input.len() {
-                let inner = input[inner_idx];
+            for inner in input.iter().skip(middle_idx) {
                 if outer + middle + inner == 2020 {
                     return Ok(outer * middle * inner);
                 }
@@ -106,7 +104,7 @@ fn part2(input: &[i32]) -> Result<i32, &str> {
         }
     }
 
-    return Err("no matching triple found");
+    Err("no matching triple found")
 }
 
 #[cfg(test)]
