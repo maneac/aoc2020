@@ -44,19 +44,18 @@ How many passwords are valid according to the new interpretation of the policies
 
 */
 
-use std::fs;
-use std::path::Path;
+use std::{error::Error, fs::read_to_string, path::Path};
 
-pub fn run() {
-    let input_string = match fs::read_to_string(Path::new("./data/day_2.txt")) {
-        Ok(l) => l,
-        Err(e) => panic!("Failed to open data file for day 2: {}", e),
-    };
+pub fn run() -> Result<(String, String), Box<dyn Error>> {
+    let input_string = read_to_string(Path::new("./data/day_2.txt"))?;
 
     let input = parse_input(&input_string);
 
-    println!("Part 1: {}", part_1(&input));
-    println!("Part 2: {}", part_2(&input));
+    let part1 = part_1(&input);
+
+    let part2 = part_2(&input);
+
+    Ok((part1.to_string(), part2.to_string()))
 }
 
 #[derive(Debug, PartialOrd, PartialEq)]

@@ -129,15 +129,16 @@ optional. In your batch file, how many passports are valid?
 
 */
 
-pub fn run() -> Result<(String, String), &'static str> {
-    let input = std::fs::read_to_string(std::path::Path::new("./data/day_4.txt"))
-        .expect("Unable to read data for day 4");
+use std::error::Error;
+use std::fs::read_to_string;
+use std::path::Path;
+
+pub fn run() -> Result<(String, String), Box<dyn Error>> {
+    let input = read_to_string(Path::new("./data/day_4.txt"))?;
 
     let part1 = part1(&input);
-    println!("Part 1: {}", part1);
 
     let part2 = part2(&input);
-    println!("Part 2: {}", part2);
 
     Ok((part1.to_string(), part2.to_string()))
 }
