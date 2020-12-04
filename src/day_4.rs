@@ -129,15 +129,16 @@ optional. In your batch file, how many passports are valid?
 
 */
 
-pub fn run() -> Result<(String, String), &'static str> {
-    let input = std::fs::read_to_string(std::path::Path::new("./data/day_4.txt"))
-        .expect("Unable to read data for day 4");
+use std::error::Error;
+use std::fs::read_to_string;
+use std::path::Path;
+
+pub fn run() -> Result<(String, String), Box<dyn Error>> {
+    let input = read_to_string(Path::new("./data/day_4.txt"))?;
 
     let part1 = part1(&input);
-    println!("Part 1: {}", part1);
 
     let part2 = part2(&input);
-    println!("Part 2: {}", part2);
 
     Ok((part1.to_string(), part2.to_string()))
 }
@@ -165,11 +166,11 @@ fn part2(input: &str) -> usize {
             for field in entry.trim().split_ascii_whitespace() {
                 field_count += 1;
                 let parts = field
-                    .split(":")
+                    .split(':')
                     .enumerate()
                     .fold([""; 2], |mut acc, (idx, chunk)| {
                         acc[idx] = chunk;
-                        return acc;
+                        acc
                     });
                 match parts[0] {
                     "byr" => {
@@ -209,14 +210,11 @@ fn part2(input: &str) -> usize {
                         }
                     }
                     "hcl" => {
-                        if !parts[1].starts_with("#") || parts[1].len() != 7 {
+                        if !parts[1].starts_with('#') || parts[1].len() != 7 {
                             return false;
                         }
-                        match u32::from_str_radix(&parts[1][1..], 16) {
-                            Err(_) => {
-                                return false;
-                            }
-                            _ => {}
+                        if u32::from_str_radix(&parts[1][1..], 16).is_err() {
+                            return false;
                         }
                     }
                     "ecl" => match parts[1] {
@@ -229,11 +227,8 @@ fn part2(input: &str) -> usize {
                         if parts[1].len() != 9 {
                             return false;
                         }
-                        match parts[1].parse::<usize>() {
-                            Err(_) => {
-                                return false;
-                            }
-                            _ => {}
+                        if parts[1].parse::<usize>().is_err() {
+                            return false;
                         }
                     }
                     "cid" => {
@@ -242,7 +237,7 @@ fn part2(input: &str) -> usize {
                     _ => {}
                 }
             }
-            return (field_count == 8) || (field_count == 7 && !has_cid);
+            (field_count == 8) || (field_count == 7 && !has_cid)
         })
         .count();
 }

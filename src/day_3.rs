@@ -58,7 +58,7 @@ The locations you'd check in the above example are marked here with O where ther
 
 In this example, traversing the map using this slope would cause you to encounter 7 trees.
 
---- Part 1 ---
+--- Part One ---
 
 Starting at the top-left corner of your map and following a slope of right 3 and down 1, how many trees would you encounter?
 
@@ -80,19 +80,17 @@ In the above example, these slopes would find 2, 7, 3, 4, and 2 tree(s) respecti
 What do you get if you multiply together the number of trees encountered on each of the listed slopes?
 */
 
-use std::path::Path;
-use std::{cmp::max, fs};
+use std::{cmp::max, error::Error, fs::read_to_string, path::Path};
 
-pub fn run() {
-    let input_string = match fs::read_to_string(Path::new("./data/day_3.txt")) {
-        Ok(l) => l,
-        Err(e) => panic!("Failed to open data file for day 3: {}", e),
-    };
+pub fn run() -> Result<(String, String), Box<dyn Error>> {
+    let input_string = read_to_string(Path::new("./data/day_3.txt"))?;
 
     let input = parse_input(&input_string);
 
-    println!("Part 1: {}", part_1(&input));
-    println!("Part 2: {}", part_2(&input));
+    let part1 = part_1(&input);
+    let part2 = part_2(&input);
+
+    Ok((part1.to_string(), part2.to_string()))
 }
 
 // This is sufficient as the input data has length 31
@@ -104,10 +102,10 @@ struct Trees {
 
 impl Trees {
     fn new() -> Self {
-        return Self {
+        Self {
             trees: Vec::new(),
             row_len: 0,
-        };
+        }
     }
 }
 
@@ -122,11 +120,11 @@ fn parse_input(input: &str) -> Trees {
                     if chr == '#' {
                         acc |= 1 << idx;
                     }
-                    return acc;
+                    acc
                 }),
         );
     }
-    return out;
+    out
 }
 
 fn part_1(input: &Trees) -> usize {
@@ -148,7 +146,7 @@ fn part_2(input: &Trees) -> usize {
         .enumerate()
         .fold([0usize; 5], |mut acc, (row_num, row)| {
             // D1, R1
-            if ((1 << row_num % input.row_len) as u32 & *row) > 0 {
+            if ((1 << (row_num % input.row_len)) as u32 & *row) > 0 {
                 acc[0] += 1;
             }
             // D1, R3
@@ -167,14 +165,14 @@ fn part_2(input: &Trees) -> usize {
             if row_num % 2 == 0 && ((1 << ((row_num / 2) % input.row_len)) as u32 & *row) > 0 {
                 acc[4] += 1;
             }
-            return acc;
+            acc
         })
         .iter()
         .fold(0usize, |acc, &count| {
             if acc == 0 {
                 return count;
             }
-            return acc * count;
+            acc * count
         });
 }
 

@@ -48,71 +48,63 @@ In your expense report, what is the product of the three entries that sum to 202
 
 */
 
-use std::fs;
-use std::path::Path;
+use std::{error::Error, fs::read_to_string, path::Path};
 
-pub fn run() {
-    let input_string = match fs::read_to_string(Path::new("./data/day_1.txt")) {
-        Ok(l) => l,
-        Err(e) => panic!("Failed to open data file for day1: {}", e),
-    };
+pub fn run() -> Result<(String, String), Box<dyn Error>> {
+    let input_string = read_to_string(Path::new("./data/day_1.txt"))?;
 
     let input = parse_input(&input_string);
 
-    println!(
-        "Part 1: {}",
-        part1(&input, 2020).expect("Failed to run day 1, part 1")
-    );
+    let part1 = part1(&input)?;
 
-    println!(
-        "Part 2: {}",
-        part2(&input, 2020).expect("Failed to run day 1, part 2")
-    );
+    let part2 = part2(&input)?;
+
+    Ok((part1.to_string(), part2.to_string()))
 }
 
 fn parse_input(input_string: &str) -> Vec<i32> {
-    return input_string.lines().fold(Vec::new(), |mut acc, line| {
+    let mut out = input_string.lines().fold(Vec::new(), |mut acc, line| {
         let trimmed = line.trim();
-        if trimmed.len() > 0 {
+        if !trimmed.is_empty() {
             acc.push(
                 line.trim()
                     .parse::<i32>()
                     .expect("Unable to parse line as integer"),
             );
         }
-        return acc;
+        acc
     });
+    out.sort_unstable();
+    out
 }
 
-fn part1(input: &[i32], target: i32) -> Result<i32, &str> {
+fn part1(input: &[i32]) -> Result<i32, &str> {
     for outer_idx in 0..input.len() {
         let outer = input[outer_idx];
-        for inner_idx in outer_idx..input.len() {
-            let inner = input[inner_idx];
-            if outer + inner == target {
+        for inner in input.iter().skip(outer_idx) {
+            if outer + inner == 2020 {
                 return Ok(outer * inner);
             }
         }
     }
 
-    return Err("no matching pair found");
+    Err("no matching pair found")
 }
 
-fn part2(input: &[i32], target: i32) -> Result<i32, &str> {
+fn part2(input: &[i32]) -> Result<i32, &str> {
     for outer_idx in 0..input.len() {
         let outer = input[outer_idx];
         for middle_idx in outer_idx..input.len() {
             let middle = input[middle_idx];
-            for inner_idx in middle_idx..input.len() {
-                let inner = input[inner_idx];
-                if outer + middle + inner == target {
+            for inner in input.iter().skip(middle_idx) {
+                if outer + middle + inner == 2020 {
                     return Ok(outer * middle * inner);
                 }
             }
         }
     }
 
-    return Err("no matching triple found");
+    Err("no matching triple found")
 }
 
 #[cfg(test)]
@@ -125,7 +117,7 @@ mod tests {
 
         let expected = 514579;
 
-        assert_eq!(expected, part1(&input, 2020).expect(""));
+        assert_eq!(expected, part1(&input).expect(""));
     }
 
     #[test]
@@ -134,7 +126,7 @@ mod tests {
 
         let expected = 241861950;
 
-        assert_eq!(expected, part2(&input, 2020).expect(""))
+        assert_eq!(expected, part2(&input).expect(""))
     }
 
     #[test]
@@ -146,7 +138,7 @@ mod tests {
             1
             ";
 
-        let expected = vec![10, 20, 1];
+        let expected = vec![1, 10, 20];
 
         assert_eq!(expected, parse_input(&input));
     }
