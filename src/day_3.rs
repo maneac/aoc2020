@@ -102,10 +102,10 @@ struct Trees {
 
 impl Trees {
     fn new() -> Self {
-        return Self {
+        Self {
             trees: Vec::new(),
             row_len: 0,
-        };
+        }
     }
 }
 
@@ -120,11 +120,11 @@ fn parse_input(input: &str) -> Trees {
                     if chr == '#' {
                         acc |= 1 << idx;
                     }
-                    return acc;
+                    acc
                 }),
         );
     }
-    return out;
+    out
 }
 
 fn part_1(input: &Trees) -> usize {
@@ -146,7 +146,7 @@ fn part_2(input: &Trees) -> usize {
         .enumerate()
         .fold([0usize; 5], |mut acc, (row_num, row)| {
             // D1, R1
-            if ((1 << row_num % input.row_len) as u32 & *row) > 0 {
+            if ((1 << (row_num % input.row_len)) as u32 & *row) > 0 {
                 acc[0] += 1;
             }
             // D1, R3
@@ -165,14 +165,14 @@ fn part_2(input: &Trees) -> usize {
             if row_num % 2 == 0 && ((1 << ((row_num / 2) % input.row_len)) as u32 & *row) > 0 {
                 acc[4] += 1;
             }
-            return acc;
+            acc
         })
         .iter()
         .fold(0usize, |acc, &count| {
             if acc == 0 {
                 return count;
             }
-            return acc * count;
+            acc * count
         });
 }
 

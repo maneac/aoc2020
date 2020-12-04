@@ -106,14 +106,14 @@ fn parse_input(input: &str) -> Vec<Entry> {
                     }
                     _ => entry.password.push(chr),
                 }
-                return entry;
+                entry
             },
         ));
     }
-    return out;
+    out
 }
 
-fn part_1(input: &Vec<Entry>) -> usize {
+fn part_1(input: &[Entry]) -> usize {
     return input
         .iter()
         .filter(|entry| {
@@ -122,12 +122,12 @@ fn part_1(input: &Vec<Entry>) -> usize {
                 .chars()
                 .filter(|chr| chr.eq(&entry.target))
                 .count() as u32;
-            return entry.min <= ct && ct <= entry.max;
+            entry.min <= ct && ct <= entry.max
         })
         .count();
 }
 
-fn part_2(input: &Vec<Entry>) -> usize {
+fn part_2(input: &[Entry]) -> usize {
     return input
         .iter()
         .filter(|entry| {
