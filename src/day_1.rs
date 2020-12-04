@@ -140,7 +140,7 @@ mod tests {
             1
             ";
 
-        let expected = vec![10, 20, 1];
+        let expected = vec![1, 10, 20];
 
         assert_eq!(expected, parse_input(&input));
     }
