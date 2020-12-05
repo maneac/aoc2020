@@ -58,7 +58,7 @@ fn main() {
         let results = (*day.run_fn)();
         let runtime = start.elapsed();
 
-        println!(" [{}.{:05}s]", runtime.as_secs(), runtime.subsec_micros());
+        println!(" [{}\u{b5}s]", runtime.as_micros());
 
         match results {
             Err(e) => println!("Failed to run day {}: {}", day_num, e),

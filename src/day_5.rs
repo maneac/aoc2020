@@ -71,13 +71,13 @@ pub fn run() -> Result<(String, String), Box<dyn Error>> {
     Ok((part1.to_string(), part2.to_string()))
 }
 
-fn parse_input(input: &str) -> Vec<usize> {
+fn parse_input(input: &str) -> Vec<u16> {
     let mut output = vec![];
     for line in input.trim().lines() {
         output.push(
             line.trim()
                 .char_indices()
-                .fold(0usize, |mut acc, (idx, chr)| {
+                .fold(0u16, |mut acc, (idx, chr)| {
                     if chr == 'R' || chr == 'B' {
                         acc |= 1 << (line.len() - 1 - idx);
                     }
@@ -89,11 +89,11 @@ fn parse_input(input: &str) -> Vec<usize> {
     output
 }
 
-fn part_1(input: &[usize]) -> usize {
+fn part_1(input: &[u16]) -> u16 {
     *input.iter().next_back().unwrap()
 }
 
-fn part_2(input: &[usize]) -> usize {
+fn part_2(input: &[u16]) -> u16 {
     let mut prev = input[0] - 1;
     for seat in input.iter() {
         if *seat != (prev + 1) {
