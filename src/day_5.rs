@@ -85,7 +85,7 @@ fn parse_input(input: &str) -> Vec<usize> {
                 }),
         );
     }
-    output.sort();
+    output.sort_unstable();
     output
 }
 
