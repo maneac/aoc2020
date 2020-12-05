@@ -4,6 +4,7 @@ mod day_1;
 mod day_2;
 mod day_3;
 mod day_4;
+mod day_5;
 
 struct Day<'day> {
     run_fn: &'day dyn Fn() -> Result<(String, String), Box<dyn Error>>,
@@ -41,6 +42,11 @@ fn main() {
             run_fn: &day_4::run,
             part_1_expected: "206",
             part_2_expected: "123",
+        },
+        Day {
+            run_fn: &day_5::run,
+            part_1_expected: "838",
+            part_2_expected: "714",
         },
     ];
 
