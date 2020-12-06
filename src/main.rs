@@ -5,9 +5,12 @@ mod day_2;
 mod day_3;
 mod day_4;
 mod day_5;
+mod day_6;
+
+pub type DayResponse = Result<(String, String), Box<dyn Error>>;
 
 struct Day<'day> {
-    run_fn: &'day dyn Fn() -> Result<(String, String), Box<dyn Error>>,
+    run_fn: &'day dyn Fn() -> DayResponse,
     part_1_expected: &'day str,
     part_2_expected: &'day str,
 }
@@ -47,6 +50,11 @@ fn main() {
             run_fn: &day_5::run,
             part_1_expected: "838",
             part_2_expected: "714",
+        },
+        Day {
+            run_fn: &day_6::run,
+            part_1_expected: "6504",
+            part_2_expected: "3351",
         },
     ];
 

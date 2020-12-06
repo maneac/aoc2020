@@ -44,9 +44,9 @@ How many passwords are valid according to the new interpretation of the policies
 
 */
 
-use std::{error::Error, fs::read_to_string, path::Path};
+use std::{fs::read_to_string, path::Path};
 
-pub fn run() -> Result<(String, String), Box<dyn Error>> {
+pub fn run() -> crate::DayResponse {
     let input_string = read_to_string(Path::new("./data/day_2.txt"))?;
 
     let input = parse_input(&input_string);

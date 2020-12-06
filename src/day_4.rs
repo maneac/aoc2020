@@ -129,21 +129,19 @@ optional. In your batch file, how many passports are valid?
 
 */
 
-use std::error::Error;
-use std::fs::read_to_string;
-use std::path::Path;
+use std::{fs::read_to_string, path::Path};
 
-pub fn run() -> Result<(String, String), Box<dyn Error>> {
+pub fn run() -> crate::DayResponse {
     let input = read_to_string(Path::new("./data/day_4.txt"))?;
 
-    let part1 = part1(&input);
+    let part1 = part_1(&input);
 
-    let part2 = part2(&input);
+    let part2 = part_2(&input);
 
     Ok((part1.to_string(), part2.to_string()))
 }
 
-fn part1(input: &str) -> usize {
+fn part_1(input: &str) -> usize {
     return input
         .split("\n\n")
         .filter(
@@ -156,7 +154,7 @@ fn part1(input: &str) -> usize {
         .count();
 }
 
-fn part2(input: &str) -> usize {
+fn part_2(input: &str) -> usize {
     return input
         .trim()
         .split("\n\n")
@@ -265,7 +263,7 @@ iyr:2011 ecl:brn hgt:59in";
 
         let expected = 2;
 
-        assert_eq!(expected, part1(input));
+        assert_eq!(expected, part_1(input));
     }
 
     #[test]
@@ -378,6 +376,6 @@ iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719";
 
         let expected = 10;
 
-        assert_eq!(expected, part2(input));
+        assert_eq!(expected, part_2(input));
     }
 }

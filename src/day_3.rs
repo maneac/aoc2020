@@ -80,9 +80,9 @@ In the above example, these slopes would find 2, 7, 3, 4, and 2 tree(s) respecti
 What do you get if you multiply together the number of trees encountered on each of the listed slopes?
 */
 
-use std::{cmp::max, error::Error, fs::read_to_string, path::Path};
+use std::{cmp::max, fs::read_to_string, path::Path};
 
-pub fn run() -> Result<(String, String), Box<dyn Error>> {
+pub fn run() -> crate::DayResponse {
     let input_string = read_to_string(Path::new("./data/day_3.txt"))?;
 
     let input = parse_input(&input_string);
