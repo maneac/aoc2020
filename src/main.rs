@@ -1,3 +1,5 @@
+#![cfg_attr(feature = "cargo-clippy", deny(clippy::all))]
+
 use std::{error::Error, time::Instant};
 
 mod day_1;

@@ -128,7 +128,7 @@ fn parse_input(input: &str) -> Trees {
 }
 
 fn part_1(input: &Trees) -> usize {
-    return input
+    input
         .trees
         .iter()
         .enumerate()
@@ -136,11 +136,11 @@ fn part_1(input: &Trees) -> usize {
             // D1, R3
             ((1 << ((3 * row_num) % input.row_len)) as u32 & *row) > 0
         })
-        .count();
+        .count()
 }
 
 fn part_2(input: &Trees) -> usize {
-    return input
+    input
         .trees
         .iter()
         .enumerate()
@@ -173,7 +173,7 @@ fn part_2(input: &Trees) -> usize {
                 return count;
             }
             acc * count
-        });
+        })
 }
 
 #[cfg(test)]

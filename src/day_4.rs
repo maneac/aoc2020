@@ -142,7 +142,7 @@ pub fn run() -> crate::DayResponse {
 }
 
 fn part_1(input: &str) -> usize {
-    return input
+    input
         .split("\n\n")
         .filter(
             |entry| match entry.trim().split_ascii_whitespace().count() {
@@ -151,11 +151,11 @@ fn part_1(input: &str) -> usize {
                 _ => false,
             },
         )
-        .count();
+        .count()
 }
 
 fn part_2(input: &str) -> usize {
-    return input
+    input
         .trim()
         .split("\n\n")
         .filter(|entry| {
@@ -237,7 +237,7 @@ fn part_2(input: &str) -> usize {
             }
             (field_count == 8) || (field_count == 7 && !has_cid)
         })
-        .count();
+        .count()
 }
 
 #[cfg(test)]

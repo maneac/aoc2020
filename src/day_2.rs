@@ -114,7 +114,7 @@ fn parse_input(input: &str) -> Vec<Entry> {
 }
 
 fn part_1(input: &[Entry]) -> usize {
-    return input
+    input
         .iter()
         .filter(|entry| {
             let ct = entry
@@ -124,14 +124,14 @@ fn part_1(input: &[Entry]) -> usize {
                 .count() as u32;
             entry.min <= ct && ct <= entry.max
         })
-        .count();
+        .count()
 }
 
 fn part_2(input: &[Entry]) -> usize {
-    return input
+    input
         .iter()
         .filter(|entry| {
-            return (entry
+            (entry
                 .password
                 .chars()
                 .nth(entry.min as usize - 1)
@@ -142,9 +142,9 @@ fn part_2(input: &[Entry]) -> usize {
                     .chars()
                     .nth(entry.max as usize - 1)
                     .expect("Invalid minimum bound for entry")
-                    .eq(&entry.target));
+                    .eq(&entry.target))
         })
-        .count();
+        .count()
 }
 
 #[cfg(test)]

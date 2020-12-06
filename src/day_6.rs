@@ -89,8 +89,7 @@ In this example, the sum of these counts is 3 + 0 + 1 + 1 + 1 = 6.
 
 For each group, count the number of questions to which everyone answered "yes". What is the sum of those counts?
 
-
- */
+*/
 
 use std::{fs::read_to_string, path::Path};
 
@@ -122,7 +121,7 @@ fn parse_input(input: &str) -> Vec<Group> {
                 .lines()
                 .fold(Group { or: 0, and: !0 }, |mut acc, line| {
                     let entry = line.chars().fold(0u32, |mut acc, chr| {
-                        acc |= 1 << (chr as u8 - 'a' as u8);
+                        acc |= 1 << (chr as u8 - b'a');
                         acc
                     });
                     acc.or |= entry;
