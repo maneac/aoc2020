@@ -48,16 +48,16 @@ In your expense report, what is the product of the three entries that sum to 202
 
 */
 
-use std::{error::Error, fs::read_to_string, path::Path};
+use std::{fs::read_to_string, path::Path};
 
-pub fn run() -> Result<(String, String), Box<dyn Error>> {
+pub fn run() -> crate::DayResponse {
     let input_string = read_to_string(Path::new("./data/day_1.txt"))?;
 
     let input = parse_input(&input_string);
 
-    let part1 = part1(&input)?;
+    let part1 = part_1(&input)?;
 
-    let part2 = part2(&input)?;
+    let part2 = part_2(&input)?;
 
     Ok((part1.to_string(), part2.to_string()))
 }
@@ -78,7 +78,7 @@ fn parse_input(input_string: &str) -> Vec<i32> {
     out
 }
 
-fn part1(input: &[i32]) -> Result<i32, &str> {
+fn part_1(input: &[i32]) -> Result<i32, &str> {
     for outer_idx in 0..input.len() {
         let outer = input[outer_idx];
         for inner in input.iter().skip(outer_idx) {
@@ -91,7 +91,7 @@ fn part1(input: &[i32]) -> Result<i32, &str> {
     Err("no matching pair found")
 }
 
-fn part2(input: &[i32]) -> Result<i32, &str> {
+fn part_2(input: &[i32]) -> Result<i32, &str> {
     for outer_idx in 0..input.len() {
         let outer = input[outer_idx];
         for middle_idx in outer_idx..input.len() {
@@ -117,7 +117,7 @@ mod tests {
 
         let expected = 514579;
 
-        assert_eq!(expected, part1(&input).expect(""));
+        assert_eq!(expected, part_1(&input).expect(""));
     }
 
     #[test]
@@ -126,7 +126,7 @@ mod tests {
 
         let expected = 241861950;
 
-        assert_eq!(expected, part2(&input).expect(""))
+        assert_eq!(expected, part_2(&input).expect(""))
     }
 
     #[test]

@@ -44,9 +44,9 @@ How many passwords are valid according to the new interpretation of the policies
 
 */
 
-use std::{error::Error, fs::read_to_string, path::Path};
+use std::{fs::read_to_string, path::Path};
 
-pub fn run() -> Result<(String, String), Box<dyn Error>> {
+pub fn run() -> crate::DayResponse {
     let input_string = read_to_string(Path::new("./data/day_2.txt"))?;
 
     let input = parse_input(&input_string);
@@ -114,7 +114,7 @@ fn parse_input(input: &str) -> Vec<Entry> {
 }
 
 fn part_1(input: &[Entry]) -> usize {
-    return input
+    input
         .iter()
         .filter(|entry| {
             let ct = entry
@@ -124,14 +124,14 @@ fn part_1(input: &[Entry]) -> usize {
                 .count() as u32;
             entry.min <= ct && ct <= entry.max
         })
-        .count();
+        .count()
 }
 
 fn part_2(input: &[Entry]) -> usize {
-    return input
+    input
         .iter()
         .filter(|entry| {
-            return (entry
+            (entry
                 .password
                 .chars()
                 .nth(entry.min as usize - 1)
@@ -142,9 +142,9 @@ fn part_2(input: &[Entry]) -> usize {
                     .chars()
                     .nth(entry.max as usize - 1)
                     .expect("Invalid minimum bound for entry")
-                    .eq(&entry.target));
+                    .eq(&entry.target))
         })
-        .count();
+        .count()
 }
 
 #[cfg(test)]
