@@ -1,6 +1,55 @@
 #![cfg_attr(feature = "cargo-clippy", deny(clippy::all))]
 
-use std::{error::Error, time::Instant};
+use std::{fs::read_to_string, path::Path, time::Instant};
+
+trait Day {
+    fn parse_input(&mut self, input: &str) -> Result<(), String>;
+    fn part_1(&self) -> Result<String, String>;
+    fn part_2(&self) -> Result<String, String>;
+}
+
+struct DayRunner<'day> {
+    num: u8,
+    container: Box<dyn Day>,
+    part_1_expected: &'day str,
+    part_2_expected: &'day str,
+}
+
+fn validate_part(day: u8, part: u8, expected: &str, result: Result<String, String>) {
+    match result {
+        Ok(output) => {
+            if output != expected {
+                eprintln!(
+                        "\tIncorrect result for day {}, part {} returned:\n\t\tExpected: {}\n\t\tReturned: {}\n",
+                        day, part, expected, output,
+                    );
+            }
+        }
+        Err(e) => {
+            eprintln!("\tFailed to run day {}, part {}: {}\n", day, part, e);
+        }
+    };
+}
+
+fn day_num(module_name: &str) -> u8 {
+    module_name
+        .split('_')
+        .next_back()
+        .unwrap()
+        .parse::<u8>()
+        .unwrap()
+}
+
+macro_rules! day {
+    ($module:ident, $p1:tt,$p2:tt) => {
+        DayRunner {
+            num: day_num(stringify!($module)),
+            container: Box::new(<$module::Container>::new()),
+            part_1_expected: $p1,
+            part_2_expected: $p2,
+        };
+    };
+}
 
 mod day_1;
 mod day_2;
@@ -10,78 +59,46 @@ mod day_5;
 mod day_6;
 mod day_7;
 
-pub type DayResponse = Result<(String, String), Box<dyn Error>>;
+fn main() {
+    let mut days = vec![
+        day!(day_1, "542619", "32858450"),
+        day!(day_2, "424", "747"),
+        day!(day_3, "270", "2122848000"),
+        day!(day_4, "206", "123"),
+        day!(day_5, "838", "714"),
+        day!(day_6, "6504", "3351"),
+        day!(day_7, "", ""),
+    ];
+    for day in days.iter_mut() {
+        println!("Day {}", day.num);
+        let input_string = read_to_string(Path::new(&format!("./data/day_{}.txt", day.num)))
+            .expect(&format!("Failed to read data for day {}", day.num));
 
-struct Day<'day> {
-    run_fn: &'day dyn Fn() -> DayResponse,
-    part_1_expected: &'day str,
-    part_2_expected: &'day str,
-}
+        print!("\tParsing...");
+        let start_parse = Instant::now();
+        day.container
+            .parse_input(&input_string)
+            .expect(&format!("Failed to parse input for day {}", day.num));
+        let parse_runtime = start_parse.elapsed();
+        println!("\r\tParsed - {}ns", parse_runtime.as_nanos());
 
-fn validate_day(day: usize, part: usize, expected: &str, received: String) {
-    if expected != received {
-        panic!(
-            "Incorrect result for day {}, part {} returned:\nExpected: {}\nReturned: {}",
-            day, part, expected, received,
+        print!("\tPart 1...");
+        let start_part_1 = Instant::now();
+        let part_1 = day.container.part_1();
+        let part_1_runtime = start_part_1.elapsed();
+        println!("\r\tPart 1 - {}ns", part_1_runtime.as_nanos());
+        validate_part(day.num, 1, day.part_1_expected, part_1);
+
+        print!("\tPart 2...");
+        let start_part_2 = Instant::now();
+        let part_2 = day.container.part_2();
+        let part_2_runtime = start_part_2.elapsed();
+        println!("\r\tPart 2 - {}ns", part_2_runtime.as_nanos());
+        validate_part(day.num, 2, day.part_2_expected, part_2);
+
+        println!(
+            "Total: {}ns\n",
+            parse_runtime.as_nanos() + part_1_runtime.as_nanos() + part_2_runtime.as_nanos()
         );
     }
-}
-
-fn main() {
-    let days: Vec<Day> = vec![
-        Day {
-            run_fn: &day_1::run,
-            part_1_expected: "542619",
-            part_2_expected: "32858450",
-        },
-        Day {
-            run_fn: &day_2::run,
-            part_1_expected: "424",
-            part_2_expected: "747",
-        },
-        Day {
-            run_fn: &day_3::run,
-            part_1_expected: "270",
-            part_2_expected: "2122848000",
-        },
-        Day {
-            run_fn: &day_4::run,
-            part_1_expected: "206",
-            part_2_expected: "123",
-        },
-        Day {
-            run_fn: &day_5::run,
-            part_1_expected: "838",
-            part_2_expected: "714",
-        },
-        Day {
-            run_fn: &day_6::run,
-            part_1_expected: "6504",
-            part_2_expected: "3351",
-        },
-        Day {
-            run_fn: &day_7::run,
-            part_1_expected: "",
-            part_2_expected: "",
-        },
-    ];
-
-    days.iter().enumerate().for_each(|(idx, day)| {
-        let day_num = idx + 1;
-        print!("Day {}", day_num);
-
-        let start = Instant::now();
-        let results = (*day.run_fn)();
-        let runtime = start.elapsed();
-
-        println!(" [{}\u{b5}s]", runtime.as_micros());
-
-        match results {
-            Err(e) => println!("Failed to run day {}: {}", day_num, e),
-            Ok((part1, part2)) => {
-                validate_day(day_num, 1, day.part_1_expected, part1);
-                validate_day(day_num, 2, day.part_2_expected, part2);
-            }
-        }
-    });
 }

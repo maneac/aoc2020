@@ -80,17 +80,18 @@ In the above example, these slopes would find 2, 7, 3, 4, and 2 tree(s) respecti
 What do you get if you multiply together the number of trees encountered on each of the listed slopes?
 */
 
-use std::{cmp::max, fs::read_to_string, path::Path};
+use std::cmp::max;
 
-pub fn run() -> crate::DayResponse {
-    let input_string = read_to_string(Path::new("./data/day_3.txt"))?;
+pub struct Container {
+    input: Trees,
+}
 
-    let input = parse_input(&input_string);
-
-    let part1 = part_1(&input);
-    let part2 = part_2(&input);
-
-    Ok((part1.to_string(), part2.to_string()))
+impl Container {
+    pub fn new() -> Self {
+        Self {
+            input: Trees::new(),
+        }
+    }
 }
 
 // This is sufficient as the input data has length 31
@@ -109,71 +110,80 @@ impl Trees {
     }
 }
 
-fn parse_input(input: &str) -> Trees {
-    let mut out = Trees::new();
-    for line in input.lines() {
-        out.row_len = max(out.row_len, line.trim().len());
-        out.trees.push(
-            line.trim()
-                .char_indices()
-                .fold(0u32, |mut acc, (idx, chr)| {
-                    if chr == '#' {
-                        acc |= 1 << idx;
-                    }
-                    acc
-                }),
-        );
+impl crate::Day for Container {
+    fn parse_input(&mut self, input: &str) -> Result<(), String> {
+        let mut out = Trees::new();
+        for line in input.lines() {
+            out.row_len = max(out.row_len, line.trim().len());
+            out.trees.push(
+                line.trim()
+                    .char_indices()
+                    .fold(0u32, |mut acc, (idx, chr)| {
+                        if chr == '#' {
+                            acc |= 1 << idx;
+                        }
+                        acc
+                    }),
+            );
+        }
+        self.input = out;
+        Ok(())
     }
-    out
-}
 
-fn part_1(input: &Trees) -> usize {
-    input
-        .trees
-        .iter()
-        .enumerate()
-        .filter(|(row_num, row)| {
-            // D1, R3
-            ((1 << ((3 * row_num) % input.row_len)) as u32 & *row) > 0
-        })
-        .count()
-}
+    fn part_1(&self) -> Result<String, String> {
+        Ok(self
+            .input
+            .trees
+            .iter()
+            .enumerate()
+            .filter(|(row_num, row)| {
+                // D1, R3
+                ((1 << ((3 * row_num) % self.input.row_len)) as u32 & *row) > 0
+            })
+            .count()
+            .to_string())
+    }
 
-fn part_2(input: &Trees) -> usize {
-    input
-        .trees
-        .iter()
-        .enumerate()
-        .fold([0usize; 5], |mut acc, (row_num, row)| {
-            // D1, R1
-            if ((1 << (row_num % input.row_len)) as u32 & *row) > 0 {
-                acc[0] += 1;
-            }
-            // D1, R3
-            if ((1 << ((3 * row_num) % input.row_len)) as u32 & *row) > 0 {
-                acc[1] += 1;
-            }
-            // D1, R5
-            if ((1 << ((5 * row_num) % input.row_len)) as u32 & *row) > 0 {
-                acc[2] += 1;
-            }
-            // D1, R7
-            if ((1 << ((7 * row_num) % input.row_len)) as u32 & *row) > 0 {
-                acc[3] += 1;
-            }
-            // D2, R1
-            if row_num % 2 == 0 && ((1 << ((row_num / 2) % input.row_len)) as u32 & *row) > 0 {
-                acc[4] += 1;
-            }
-            acc
-        })
-        .iter()
-        .fold(0usize, |acc, &count| {
-            if acc == 0 {
-                return count;
-            }
-            acc * count
-        })
+    fn part_2(&self) -> Result<String, String> {
+        Ok(self
+            .input
+            .trees
+            .iter()
+            .enumerate()
+            .fold([0usize; 5], |mut acc, (row_num, row)| {
+                // D1, R1
+                if ((1 << (row_num % self.input.row_len)) as u32 & *row) > 0 {
+                    acc[0] += 1;
+                }
+                // D1, R3
+                if ((1 << ((3 * row_num) % self.input.row_len)) as u32 & *row) > 0 {
+                    acc[1] += 1;
+                }
+                // D1, R5
+                if ((1 << ((5 * row_num) % self.input.row_len)) as u32 & *row) > 0 {
+                    acc[2] += 1;
+                }
+                // D1, R7
+                if ((1 << ((7 * row_num) % self.input.row_len)) as u32 & *row) > 0 {
+                    acc[3] += 1;
+                }
+                // D2, R1
+                if row_num % 2 == 0
+                    && ((1 << ((row_num / 2) % self.input.row_len)) as u32 & *row) > 0
+                {
+                    acc[4] += 1;
+                }
+                acc
+            })
+            .iter()
+            .fold(0usize, |acc, &count| {
+                if acc == 0 {
+                    return count;
+                }
+                acc * count
+            })
+            .to_string())
+    }
 }
 
 #[cfg(test)]

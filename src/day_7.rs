@@ -35,30 +35,26 @@ So, in this example, the number of bag colors that can eventually contain at lea
 How many bag colors can eventually contain at least one shiny gold bag? (The list of rules is quite long; make sure you get all of it.)
  */
 
-use std::{fs::read_to_string, path::Path};
+pub struct Container {}
 
-pub fn run() -> crate::DayResponse {
-    let input_string = read_to_string(Path::new("./data/day_7.txt"))?;
-
-    let input = parse_input(&input_string);
-
-    let part1 = part_1(&input)?;
-
-    let part2 = part_2(&input)?;
-
-    Ok((part1, part2))
+impl Container {
+    pub fn new() -> Self {
+        Self {}
+    }
 }
 
-fn parse_input(_input: &str) -> String {
-    "".to_string()
-}
+impl crate::Day for Container {
+    fn parse_input(&mut self, _input: &str) -> Result<(), String> {
+        Ok(())
+    }
 
-fn part_1(_input: &str) -> Result<String, String> {
-    Ok("".to_string())
-}
+    fn part_1(&self) -> Result<String, String> {
+        Ok("".to_string())
+    }
 
-fn part_2(_input: &str) -> Result<String, String> {
-    Ok("".to_string())
+    fn part_2(&self) -> Result<String, String> {
+        Ok("".to_string())
+    }
 }
 
 #[cfg(test)]

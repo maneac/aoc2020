@@ -129,115 +129,128 @@ optional. In your batch file, how many passports are valid?
 
 */
 
-use std::{fs::read_to_string, path::Path};
-
-pub fn run() -> crate::DayResponse {
-    let input = read_to_string(Path::new("./data/day_4.txt"))?;
-
-    let part1 = part_1(&input);
-
-    let part2 = part_2(&input);
-
-    Ok((part1.to_string(), part2.to_string()))
+pub struct Container {
+    input: String,
 }
 
-fn part_1(input: &str) -> usize {
-    input
-        .split("\n\n")
-        .filter(
-            |entry| match entry.trim().split_ascii_whitespace().count() {
-                8 => true,
-                7 => !entry.contains("cid:"),
-                _ => false,
-            },
-        )
-        .count()
+impl Container {
+    pub fn new() -> Self {
+        Self {
+            input: String::new(),
+        }
+    }
 }
 
-fn part_2(input: &str) -> usize {
-    input
-        .trim()
-        .split("\n\n")
-        .filter(|entry| {
-            let mut has_cid = false;
-            let mut field_count = 0;
-            for field in entry.trim().split_ascii_whitespace() {
-                field_count += 1;
-                let parts = field
-                    .split(':')
-                    .enumerate()
-                    .fold([""; 2], |mut acc, (idx, chunk)| {
-                        acc[idx] = chunk;
-                        acc
-                    });
-                match parts[0] {
-                    "byr" => {
-                        let year = parts[1].parse::<usize>().unwrap_or(0);
-                        if year < 1920 || year > 2002 {
-                            return false;
-                        }
-                    }
-                    "iyr" => {
-                        let year = parts[1].parse::<usize>().unwrap_or(0);
-                        if year < 2010 || year > 2020 {
-                            return false;
-                        }
-                    }
-                    "eyr" => {
-                        let year = parts[1].parse::<usize>().unwrap_or(0);
-                        if year < 2020 || year > 2030 {
-                            return false;
-                        }
-                    }
-                    "hgt" => {
-                        let height = parts[1][..parts[1].len() - 2].parse::<usize>().unwrap_or(0);
-                        match &parts[1][parts[1].len() - 2..] {
-                            "in" => {
-                                if height < 59 || height > 76 {
-                                    return false;
-                                }
-                            }
-                            "cm" => {
-                                if height < 150 || height > 193 {
-                                    return false;
-                                }
-                            }
-                            _ => {
+impl crate::Day for Container {
+    fn parse_input(&mut self, input: &str) -> Result<(), String> {
+        self.input = input.to_owned();
+        Ok(())
+    }
+
+    fn part_1(&self) -> Result<String, String> {
+        Ok(self
+            .input
+            .split("\n\n")
+            .filter(
+                |entry| match entry.trim().split_ascii_whitespace().count() {
+                    8 => true,
+                    7 => !entry.contains("cid:"),
+                    _ => false,
+                },
+            )
+            .count()
+            .to_string())
+    }
+
+    fn part_2(&self) -> Result<String, String> {
+        Ok(self
+            .input
+            .trim()
+            .split("\n\n")
+            .filter(|entry| {
+                let mut has_cid = false;
+                let mut field_count = 0;
+                for field in entry.trim().split_ascii_whitespace() {
+                    field_count += 1;
+                    let parts =
+                        field
+                            .split(':')
+                            .enumerate()
+                            .fold([""; 2], |mut acc, (idx, chunk)| {
+                                acc[idx] = chunk;
+                                acc
+                            });
+                    match parts[0] {
+                        "byr" => {
+                            let year = parts[1].parse::<usize>().unwrap_or(0);
+                            if year < 1920 || year > 2002 {
                                 return false;
                             }
                         }
+                        "iyr" => {
+                            let year = parts[1].parse::<usize>().unwrap_or(0);
+                            if year < 2010 || year > 2020 {
+                                return false;
+                            }
+                        }
+                        "eyr" => {
+                            let year = parts[1].parse::<usize>().unwrap_or(0);
+                            if year < 2020 || year > 2030 {
+                                return false;
+                            }
+                        }
+                        "hgt" => {
+                            let height =
+                                parts[1][..parts[1].len() - 2].parse::<usize>().unwrap_or(0);
+                            match &parts[1][parts[1].len() - 2..] {
+                                "in" => {
+                                    if height < 59 || height > 76 {
+                                        return false;
+                                    }
+                                }
+                                "cm" => {
+                                    if height < 150 || height > 193 {
+                                        return false;
+                                    }
+                                }
+                                _ => {
+                                    return false;
+                                }
+                            }
+                        }
+                        "hcl" => {
+                            if !parts[1].starts_with('#') || parts[1].len() != 7 {
+                                return false;
+                            }
+                            if u32::from_str_radix(&parts[1][1..], 16).is_err() {
+                                return false;
+                            }
+                        }
+                        "ecl" => match parts[1] {
+                            "amb" | "blu" | "brn" | "gry" | "grn" | "hzl" | "oth" => {}
+                            _ => {
+                                return false;
+                            }
+                        },
+                        "pid" => {
+                            if parts[1].len() != 9 {
+                                return false;
+                            }
+                            if parts[1].parse::<usize>().is_err() {
+                                return false;
+                            }
+                        }
+                        "cid" => {
+                            has_cid = true;
+                        }
+                        _ => {}
                     }
-                    "hcl" => {
-                        if !parts[1].starts_with('#') || parts[1].len() != 7 {
-                            return false;
-                        }
-                        if u32::from_str_radix(&parts[1][1..], 16).is_err() {
-                            return false;
-                        }
-                    }
-                    "ecl" => match parts[1] {
-                        "amb" | "blu" | "brn" | "gry" | "grn" | "hzl" | "oth" => {}
-                        _ => {
-                            return false;
-                        }
-                    },
-                    "pid" => {
-                        if parts[1].len() != 9 {
-                            return false;
-                        }
-                        if parts[1].parse::<usize>().is_err() {
-                            return false;
-                        }
-                    }
-                    "cid" => {
-                        has_cid = true;
-                    }
-                    _ => {}
                 }
-            }
-            (field_count == 8) || (field_count == 7 && !has_cid)
-        })
-        .count()
+                (field_count == 8) || (field_count == 7 && !has_cid)
+            })
+            .count()
+            .to_string())
+    }
 }
 
 #[cfg(test)]

@@ -1,4 +1,4 @@
-/*
+/* Source: https://adventofcode.com/2020/day/6
  --- Day 6: Custom Customs ---
 
 As your flight approaches the regional airport where you'll switch to a much larger plane, customs declaration forms are
@@ -91,18 +91,14 @@ For each group, count the number of questions to which everyone answered "yes". 
 
 */
 
-use std::{fs::read_to_string, path::Path};
+pub struct Container {
+    input: Vec<Group>,
+}
 
-pub fn run() -> crate::DayResponse {
-    let input_string = read_to_string(Path::new("./data/day_6.txt"))?;
-
-    let input = parse_input(&input_string);
-
-    let part1 = part_1(&input);
-
-    let part2 = part_2(&input);
-
-    Ok((part1.to_string(), part2.to_string()))
+impl Container {
+    pub fn new() -> Self {
+        Self { input: Vec::new() }
+    }
 }
 
 #[derive(Debug, PartialOrd, PartialEq)]
@@ -111,39 +107,50 @@ struct Group {
     and: u32,
 }
 
-fn parse_input(input: &str) -> Vec<Group> {
-    input
-        .trim()
-        .split("\n\n")
-        .map(|group| {
-            group
-                .trim()
-                .lines()
-                .fold(Group { or: 0, and: !0 }, |mut acc, line| {
-                    let entry = line.chars().fold(0u32, |mut acc, chr| {
-                        acc |= 1 << (chr as u8 - b'a');
+impl crate::Day for Container {
+    fn parse_input(&mut self, input: &str) -> Result<(), String> {
+        self.input = input
+            .trim()
+            .split("\n\n")
+            .map(|group| {
+                group
+                    .trim()
+                    .lines()
+                    .fold(Group { or: 0, and: !0 }, |mut acc, line| {
+                        let entry = line.chars().fold(0u32, |mut acc, chr| {
+                            acc |= 1 << (chr as u8 - b'a');
+                            acc
+                        });
+                        acc.or |= entry;
+                        acc.and &= entry;
                         acc
-                    });
-                    acc.or |= entry;
-                    acc.and &= entry;
-                    acc
-                })
-        })
-        .collect()
-}
+                    })
+            })
+            .collect();
+        Ok(())
+    }
 
-fn part_1(input: &[Group]) -> u32 {
-    input.iter().fold(0u32, |mut acc, group| {
-        acc += group.or.count_ones();
-        acc
-    })
-}
+    fn part_1(&self) -> Result<String, String> {
+        Ok(self
+            .input
+            .iter()
+            .fold(0u32, |mut acc, group| {
+                acc += group.or.count_ones();
+                acc
+            })
+            .to_string())
+    }
 
-fn part_2(input: &[Group]) -> u32 {
-    input.iter().fold(0u32, |mut acc, group| {
-        acc += group.and.count_ones();
-        acc
-    })
+    fn part_2(&self) -> Result<String, String> {
+        Ok(self
+            .input
+            .iter()
+            .fold(0u32, |mut acc, group| {
+                acc += group.and.count_ones();
+                acc
+            })
+            .to_string())
+    }
 }
 
 #[cfg(test)]
