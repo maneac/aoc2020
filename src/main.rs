@@ -2,6 +2,14 @@
 
 use std::{fs::read_to_string, path::Path, time::Instant};
 
+mod day_1;
+mod day_2;
+mod day_3;
+mod day_4;
+mod day_5;
+mod day_6;
+mod day_7;
+
 trait Day {
     fn parse_input(&mut self, input: &str) -> Result<(), String>;
     fn part_1(&self) -> Result<String, String>;
@@ -51,14 +59,6 @@ macro_rules! day {
     };
 }
 
-mod day_1;
-mod day_2;
-mod day_3;
-mod day_4;
-mod day_5;
-mod day_6;
-mod day_7;
-
 fn main() {
     let mut days = vec![
         day!(day_1, "542619", "32858450"),
@@ -71,14 +71,20 @@ fn main() {
     ];
     for day in days.iter_mut() {
         println!("Day {}", day.num);
-        let input_string = read_to_string(Path::new(&format!("./data/day_{}.txt", day.num)))
-            .expect(&format!("Failed to read data for day {}", day.num));
+        let input_string = match read_to_string(Path::new(&format!("./data/day_{}.txt", day.num))) {
+            Ok(res) => res,
+            Err(e) => {
+                eprintln!("Failed to read data for day {}: {}", day.num, e);
+                continue;
+            }
+        };
 
         print!("\tParsing...");
         let start_parse = Instant::now();
-        day.container
-            .parse_input(&input_string)
-            .expect(&format!("Failed to parse input for day {}", day.num));
+        if let Err(e) = day.container.parse_input(&input_string) {
+            eprintln!("Failed to parse input for day {}: {}", day.num, e);
+            continue;
+        }
         let parse_runtime = start_parse.elapsed();
         println!("\r\tParsed - {}ns", parse_runtime.as_nanos());
 
