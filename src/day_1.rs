@@ -50,7 +50,6 @@ In your expense report, what is the product of the three entries that sum to 202
 
 use crate::Day;
 
-#[derive(Debug, PartialOrd, PartialEq)]
 pub struct Container {
     input: Vec<i32>,
 }
@@ -119,28 +118,6 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_part1_examples() {
-        let input = Day1 {
-            input: vec![1721, 979, 366, 299, 675, 1456],
-        };
-
-        let expected = "514579".to_string();
-
-        assert_eq!(Ok(expected), input.part_1());
-    }
-
-    #[test]
-    fn test_part2_example() {
-        let input = Day1 {
-            input: vec![1721, 979, 366, 299, 675, 1456],
-        };
-
-        let expected = "41861950".to_string();
-
-        assert_eq!(Ok(expected), input.part_2())
-    }
-
-    #[test]
     fn test_parse_input() {
         let input = "
             10
@@ -149,10 +126,32 @@ mod tests {
             1
             ";
 
-        let expected = Box::new(Day1 {
-            input: vec![1, 10, 20],
-        });
+        let expected = vec![1, 10, 20];
 
-        assert_eq!(Ok(expected), Day1::parse_input(&input));
+        let mut cont = Container::new();
+        assert_eq!(Ok(()), cont.parse_input(&input));
+        assert_eq!(expected, cont.input);
+    }
+
+    #[test]
+    fn test_part_1_examples() {
+        let input = Container {
+            input: vec![1721, 979, 366, 299, 675, 1456],
+        };
+
+        let expected = 514579.to_string();
+
+        assert_eq!(Ok(expected), input.part_1());
+    }
+
+    #[test]
+    fn test_part_2_example() {
+        let input = Container {
+            input: vec![1721, 979, 366, 299, 675, 1456],
+        };
+
+        let expected = 241861950.to_string();
+
+        assert_eq!(Ok(expected), input.part_2())
     }
 }

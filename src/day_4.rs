@@ -129,6 +129,8 @@ optional. In your batch file, how many passports are valid?
 
 */
 
+use crate::Day;
+
 pub struct Container {
     input: String,
 }
@@ -141,7 +143,7 @@ impl Container {
     }
 }
 
-impl crate::Day for Container {
+impl Day for Container {
     fn parse_input(&mut self, input: &str) -> Result<(), String> {
         self.input = input.to_owned();
         Ok(())
@@ -259,8 +261,9 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_part1_example() {
-        let input = "ecl:gry pid:860033327 eyr:2020 hcl:#fffffd
+    fn test_part_1_example() {
+        let input = Container {
+            input: "ecl:gry pid:860033327 eyr:2020 hcl:#fffffd
 byr:1937 iyr:2017 cid:147 hgt:183cm
 
 iyr:2013 ecl:amb cid:350 eyr:2023 pid:028048884
@@ -272,16 +275,19 @@ ecl:brn pid:760753108 byr:1931
 hgt:179cm
 
 hcl:#cfa07d eyr:2025 pid:166559648
-iyr:2011 ecl:brn hgt:59in";
+iyr:2011 ecl:brn hgt:59in"
+                .to_string(),
+        };
 
-        let expected = 2;
+        let expected = 2.to_string();
 
-        assert_eq!(expected, part_1(input));
+        assert_eq!(Ok(expected), input.part_1());
     }
 
     #[test]
-    fn test_part2_example() {
-        let input = "eyr:1972 cid:100
+    fn test_part_2_example() {
+        let input = Container {
+            input: "eyr:1972 cid:100
 hcl:#18171d ecl:amb hgt:170 pid:186cm iyr:2018 byr:1926
 
 iyr:2019
@@ -385,10 +391,12 @@ hgt:164cm byr:2001 iyr:2015 cid:88
 pid:545766238 ecl:hzl
 eyr:2022
 
-iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719";
+iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719"
+                .to_string(),
+        };
 
-        let expected = 10;
+        let expected = 10.to_string();
 
-        assert_eq!(expected, part_2(input));
+        assert_eq!(Ok(expected), input.part_2());
     }
 }

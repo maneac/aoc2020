@@ -91,6 +91,8 @@ For each group, count the number of questions to which everyone answered "yes". 
 
 */
 
+use crate::Day;
+
 pub struct Container {
     input: Vec<Group>,
 }
@@ -107,7 +109,7 @@ struct Group {
     and: u32,
 }
 
-impl crate::Day for Container {
+impl Day for Container {
     fn parse_input(&mut self, input: &str) -> Result<(), String> {
         self.input = input
             .trim()
@@ -198,66 +200,72 @@ b";
             },
         ];
 
-        assert_eq!(expected, parse_input(input));
+        let mut cont = Container::new();
+        assert_eq!(Ok(()), cont.parse_input(input));
+        assert_eq!(expected, cont.input);
     }
 
     #[test]
-    fn test_part1_example() {
-        let input = vec![
-            Group {
-                or: 1 << 0 | 1 << 1 | 1 << 2,
-                and: 1 << 0 | 1 << 1 | 1 << 2,
-            },
-            Group {
-                or: 1 << 0 | 1 << 1 | 1 << 2,
-                and: 0,
-            },
-            Group {
-                or: 1 << 0 | 1 << 1 | 1 << 2,
-                and: 1 << 0,
-            },
-            Group {
-                or: 1 << 0,
-                and: 1 << 0,
-            },
-            Group {
-                or: 1 << 1,
-                and: 1 << 1,
-            },
-        ];
+    fn test_part_1_example() {
+        let input = Container {
+            input: vec![
+                Group {
+                    or: 1 << 0 | 1 << 1 | 1 << 2,
+                    and: 1 << 0 | 1 << 1 | 1 << 2,
+                },
+                Group {
+                    or: 1 << 0 | 1 << 1 | 1 << 2,
+                    and: 0,
+                },
+                Group {
+                    or: 1 << 0 | 1 << 1 | 1 << 2,
+                    and: 1 << 0,
+                },
+                Group {
+                    or: 1 << 0,
+                    and: 1 << 0,
+                },
+                Group {
+                    or: 1 << 1,
+                    and: 1 << 1,
+                },
+            ],
+        };
 
-        let expected = 11;
+        let expected = 11.to_string();
 
-        assert_eq!(expected, part_1(&input));
+        assert_eq!(Ok(expected), input.part_1());
     }
 
     #[test]
-    fn test_part2_example() {
-        let input = vec![
-            Group {
-                or: 1 << 0 | 1 << 1 | 1 << 2,
-                and: 1 << 0 | 1 << 1 | 1 << 2,
-            },
-            Group {
-                or: 1 << 0 | 1 << 1 | 1 << 2,
-                and: 0,
-            },
-            Group {
-                or: 1 << 0 | 1 << 1 | 1 << 2,
-                and: 1 << 0,
-            },
-            Group {
-                or: 1 << 0,
-                and: 1 << 0,
-            },
-            Group {
-                or: 1 << 1,
-                and: 1 << 1,
-            },
-        ];
+    fn test_part_2_example() {
+        let input = Container {
+            input: vec![
+                Group {
+                    or: 1 << 0 | 1 << 1 | 1 << 2,
+                    and: 1 << 0 | 1 << 1 | 1 << 2,
+                },
+                Group {
+                    or: 1 << 0 | 1 << 1 | 1 << 2,
+                    and: 0,
+                },
+                Group {
+                    or: 1 << 0 | 1 << 1 | 1 << 2,
+                    and: 1 << 0,
+                },
+                Group {
+                    or: 1 << 0,
+                    and: 1 << 0,
+                },
+                Group {
+                    or: 1 << 1,
+                    and: 1 << 1,
+                },
+            ],
+        };
 
-        let expected = 6;
+        let expected = 6.to_string();
 
-        assert_eq!(expected, part_2(&input));
+        assert_eq!(Ok(expected), input.part_2());
     }
 }

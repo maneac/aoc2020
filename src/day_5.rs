@@ -57,6 +57,8 @@ What is the ID of your seat?
 
 */
 
+use crate::Day;
+
 pub struct Container {
     input: Vec<u16>,
 }
@@ -67,7 +69,7 @@ impl Container {
     }
 }
 
-impl crate::Day for Container {
+impl Day for Container {
     fn parse_input(&mut self, input: &str) -> Result<(), String> {
         for line in input.trim().lines() {
             self.input.push(
@@ -117,24 +119,30 @@ BBFFBBFRLL";
 
         let expected = vec![119, 567, 820];
 
-        assert_eq!(expected, parse_input(input));
+        let mut cont = Container::new();
+        assert_eq!(Ok(()), cont.parse_input(input));
+        assert_eq!(expected, cont.input);
     }
 
     #[test]
-    fn test_part1_example() {
-        let input = vec![119, 567, 820];
+    fn test_part_1_example() {
+        let input = Container {
+            input: vec![119, 567, 820],
+        };
 
-        let expected = 820;
+        let expected = 820.to_string();
 
-        assert_eq!(expected, part_1(&input));
+        assert_eq!(Ok(expected), input.part_1());
     }
 
     #[test]
-    fn test_part2() {
-        let input = vec![4, 5, 7];
+    fn test_part_2() {
+        let input = Container {
+            input: vec![4, 5, 7],
+        };
 
-        let expected = 6;
+        let expected = 6.to_string();
 
-        assert_eq!(expected, part_2(&input));
+        assert_eq!(Ok(expected), input.part_2());
     }
 }

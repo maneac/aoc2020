@@ -44,6 +44,8 @@ How many passwords are valid according to the new interpretation of the policies
 
 */
 
+use crate::Day;
+
 pub struct Container {
     input: Vec<Entry>,
 }
@@ -62,7 +64,7 @@ struct Entry {
     password: String,
 }
 
-impl crate::Day for Container {
+impl Day for Container {
     fn parse_input(&mut self, input: &str) -> Result<(), String> {
         let mut out = Vec::<Entry>::new();
         for line in input.lines() {
@@ -162,6 +164,7 @@ mod tests {
             1-10 a: aa
             11-1 b: aa
             10-11 c: ab";
+
         let expected = vec![
             Entry {
                 min: 1,
@@ -201,60 +204,68 @@ mod tests {
             },
         ];
 
-        assert_eq!(expected, parse_input(&input));
+        let mut cont = Container::new();
+        assert_eq!(Ok(()), cont.parse_input(&input));
+        assert_eq!(expected, cont.input);
     }
 
     #[test]
-    fn test_part1_example() {
-        let input = vec![
-            Entry {
-                min: 1,
-                max: 3,
-                target: 'a',
-                password: String::from("abcde"),
-            },
-            Entry {
-                min: 1,
-                max: 3,
-                target: 'b',
-                password: String::from("cdefg"),
-            },
-            Entry {
-                min: 2,
-                max: 9,
-                target: 'c',
-                password: String::from("ccccccccc"),
-            },
-        ];
-        let expected = 2;
+    fn test_part_1_example() {
+        let input = Container {
+            input: vec![
+                Entry {
+                    min: 1,
+                    max: 3,
+                    target: 'a',
+                    password: String::from("abcde"),
+                },
+                Entry {
+                    min: 1,
+                    max: 3,
+                    target: 'b',
+                    password: String::from("cdefg"),
+                },
+                Entry {
+                    min: 2,
+                    max: 9,
+                    target: 'c',
+                    password: String::from("ccccccccc"),
+                },
+            ],
+        };
 
-        assert_eq!(expected, part_1(&input));
+        let expected = 2.to_string();
+
+        assert_eq!(Ok(expected), input.part_1());
     }
 
     #[test]
-    fn test_part2_example() {
-        let input = vec![
-            Entry {
-                min: 1,
-                max: 3,
-                target: 'a',
-                password: String::from("abcde"),
-            },
-            Entry {
-                min: 1,
-                max: 3,
-                target: 'b',
-                password: String::from("cdefg"),
-            },
-            Entry {
-                min: 2,
-                max: 9,
-                target: 'c',
-                password: String::from("ccccccccc"),
-            },
-        ];
-        let expected = 1;
+    fn test_part_2_example() {
+        let input = Container {
+            input: vec![
+                Entry {
+                    min: 1,
+                    max: 3,
+                    target: 'a',
+                    password: String::from("abcde"),
+                },
+                Entry {
+                    min: 1,
+                    max: 3,
+                    target: 'b',
+                    password: String::from("cdefg"),
+                },
+                Entry {
+                    min: 2,
+                    max: 9,
+                    target: 'c',
+                    password: String::from("ccccccccc"),
+                },
+            ],
+        };
 
-        assert_eq!(expected, part_2(&input));
+        let expected = 1.to_string();
+
+        assert_eq!(Ok(expected), input.part_2());
     }
 }

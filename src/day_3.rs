@@ -80,6 +80,7 @@ In the above example, these slopes would find 2, 7, 3, 4, and 2 tree(s) respecti
 What do you get if you multiply together the number of trees encountered on each of the listed slopes?
 */
 
+use crate::Day;
 use std::cmp::max;
 
 pub struct Container {
@@ -110,7 +111,7 @@ impl Trees {
     }
 }
 
-impl crate::Day for Container {
+impl Day for Container {
     fn parse_input(&mut self, input: &str) -> Result<(), String> {
         let mut out = Trees::new();
         for line in input.lines() {
@@ -221,55 +222,60 @@ mod tests {
             row_len: 11,
         };
 
-        assert_eq!(expected, parse_input(&input));
+        let mut cont = Container::new();
+        assert_eq!(Ok(()), cont.parse_input(&input));
+        assert_eq!(expected, cont.input);
     }
 
     #[test]
-
-    fn test_part1_example() {
-        let input = Trees {
-            trees: vec![
-                (1 << 2) | (1 << 3),
-                (1 << 0) | (1 << 4) | (1 << 8),
-                (1 << 1) | (1 << 6) | (1 << 9),
-                (1 << 2) | (1 << 4) | (1 << 8) | (1 << 10),
-                (1 << 1) | (1 << 5) | (1 << 6) | (1 << 9),
-                (1 << 2) | (1 << 4) | (1 << 5),
-                (1 << 1) | (1 << 3) | (1 << 5) | (1 << 10),
-                (1 << 1) | (1 << 10),
-                (1 << 0) | (1 << 2) | (1 << 3) | (1 << 7),
-                (1 << 0) | (1 << 4) | (1 << 5) | (1 << 10),
-                (1 << 1) | (1 << 4) | (1 << 8) | (1 << 10),
-            ],
-            row_len: 11,
+    fn test_part_1_example() {
+        let input = Container {
+            input: Trees {
+                trees: vec![
+                    (1 << 2) | (1 << 3),
+                    (1 << 0) | (1 << 4) | (1 << 8),
+                    (1 << 1) | (1 << 6) | (1 << 9),
+                    (1 << 2) | (1 << 4) | (1 << 8) | (1 << 10),
+                    (1 << 1) | (1 << 5) | (1 << 6) | (1 << 9),
+                    (1 << 2) | (1 << 4) | (1 << 5),
+                    (1 << 1) | (1 << 3) | (1 << 5) | (1 << 10),
+                    (1 << 1) | (1 << 10),
+                    (1 << 0) | (1 << 2) | (1 << 3) | (1 << 7),
+                    (1 << 0) | (1 << 4) | (1 << 5) | (1 << 10),
+                    (1 << 1) | (1 << 4) | (1 << 8) | (1 << 10),
+                ],
+                row_len: 11,
+            },
         };
 
-        let expected = 7;
+        let expected = 7.to_string();
 
-        assert_eq!(expected, part_1(&input));
+        assert_eq!(Ok(expected), input.part_1());
     }
 
     #[test]
-    fn test_part2_example() {
-        let input = Trees {
-            trees: vec![
-                (1 << 2) | (1 << 3),
-                (1 << 0) | (1 << 4) | (1 << 8),
-                (1 << 1) | (1 << 6) | (1 << 9),
-                (1 << 2) | (1 << 4) | (1 << 8) | (1 << 10),
-                (1 << 1) | (1 << 5) | (1 << 6) | (1 << 9),
-                (1 << 2) | (1 << 4) | (1 << 5),
-                (1 << 1) | (1 << 3) | (1 << 5) | (1 << 10),
-                (1 << 1) | (1 << 10),
-                (1 << 0) | (1 << 2) | (1 << 3) | (1 << 7),
-                (1 << 0) | (1 << 4) | (1 << 5) | (1 << 10),
-                (1 << 1) | (1 << 4) | (1 << 8) | (1 << 10),
-            ],
-            row_len: 11,
+    fn test_part_2_example() {
+        let input = Container {
+            input: Trees {
+                trees: vec![
+                    (1 << 2) | (1 << 3),
+                    (1 << 0) | (1 << 4) | (1 << 8),
+                    (1 << 1) | (1 << 6) | (1 << 9),
+                    (1 << 2) | (1 << 4) | (1 << 8) | (1 << 10),
+                    (1 << 1) | (1 << 5) | (1 << 6) | (1 << 9),
+                    (1 << 2) | (1 << 4) | (1 << 5),
+                    (1 << 1) | (1 << 3) | (1 << 5) | (1 << 10),
+                    (1 << 1) | (1 << 10),
+                    (1 << 0) | (1 << 2) | (1 << 3) | (1 << 7),
+                    (1 << 0) | (1 << 4) | (1 << 5) | (1 << 10),
+                    (1 << 1) | (1 << 4) | (1 << 8) | (1 << 10),
+                ],
+                row_len: 11,
+            },
         };
 
-        let expected = 336;
+        let expected = 336.to_string();
 
-        assert_eq!(expected, part_2(&input));
+        assert_eq!(Ok(expected), input.part_2());
     }
 }
