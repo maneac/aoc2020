@@ -8,6 +8,7 @@ mod day_3;
 mod day_4;
 mod day_5;
 mod day_6;
+mod day_7;
 
 pub type DayResponse = Result<(String, String), Box<dyn Error>>;
 
@@ -57,6 +58,11 @@ fn main() {
             run_fn: &day_6::run,
             part_1_expected: "6504",
             part_2_expected: "3351",
+        },
+        Day {
+            run_fn: &day_7::run,
+            part_1_expected: "",
+            part_2_expected: "",
         },
     ];
 
