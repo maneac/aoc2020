@@ -109,11 +109,11 @@ impl Day for Container {
 
             let bag_name = bag_and_children
                 .next()
-                .ok_or("no name for bag line".to_string())?;
+                .ok_or_else(|| "no name for bag line".to_string())?;
 
             let children = bag_and_children
                 .next()
-                .ok_or("no children for bag".to_string())?
+                .ok_or_else(|| "no children for bag".to_string())?
                 .trim_end_matches('.')
                 .split(", ")
                 .fold(Ok(vec![]), |res: Result<Vec<Entry>, String>, part| {
@@ -124,7 +124,7 @@ impl Day for Container {
                         acc.push(
                             part.split(" bag")
                                 .next()
-                                .ok_or("no bag in tail of line".to_string())?
+                                .ok_or_else(|| "no bag in tail of line".to_string())?
                                 .split(' ')
                                 .enumerate()
                                 .fold(
@@ -139,7 +139,7 @@ impl Day for Container {
                                                     Ok(c) => c,
                                                     Err(e) => return Err(e.to_string()),
                                                 };
-                                            } else if entry.name.len() == 0 {
+                                            } else if entry.name.is_empty() {
                                                 entry.name = chunk.to_string();
                                             } else {
                                                 entry.name.push_str(" ");
@@ -190,8 +190,8 @@ impl Day for Container {
     }
 
     fn part_1(&self) -> Result<String, String> {
-        let mut out =
-            count_parents(&self.input, "shiny gold").ok_or("no shiny gold bag".to_string())?;
+        let mut out = count_parents(&self.input, "shiny gold")
+            .ok_or_else(|| "no shiny gold bag".to_string())?;
 
         out.sort();
         out.dedup();
@@ -201,7 +201,7 @@ impl Day for Container {
 
     fn part_2(&self) -> Result<String, String> {
         Ok(count_children(&self.input, "shiny gold")
-            .ok_or("no shiny gold bag".to_string())?
+            .ok_or_else(|| "no shiny gold bag".to_string())?
             .to_string())
     }
 }
