@@ -1,53 +1,5 @@
 #![cfg_attr(feature = "cargo-clippy", deny(clippy::all))]
 
-use std::{fs::read_to_string, path::Path, time::Instant};
-
-mod day_1;
-mod day_2;
-mod day_3;
-mod day_4;
-mod day_5;
-mod day_6;
-mod day_7;
-
-trait Day {
-    fn parse_input(&mut self, input: &str) -> Result<(), String>;
-    fn part_1(&self) -> Result<String, String>;
-    fn part_2(&self) -> Result<String, String>;
-}
-
-struct DayRunner<'day> {
-    num: u8,
-    container: Box<dyn Day>,
-    part_1_expected: &'day str,
-    part_2_expected: &'day str,
-}
-
-fn validate_part(day: u8, part: u8, expected: &str, result: Result<String, String>) {
-    match result {
-        Ok(output) => {
-            if output != expected {
-                eprintln!(
-                        "\tIncorrect result for day {}, part {} returned:\n\t\tExpected: {}\n\t\tReturned: {}\n",
-                        day, part, expected, output,
-                    );
-            }
-        }
-        Err(e) => {
-            eprintln!("\tFailed to run day {}, part {}: {}\n", day, part, e);
-        }
-    };
-}
-
-fn day_num(module_name: &str) -> u8 {
-    module_name
-        .split('_')
-        .next_back()
-        .unwrap()
-        .parse::<u8>()
-        .unwrap()
-}
-
 macro_rules! day {
     ($module:ident, $p1:tt,$p2:tt) => {
         DayRunner {
@@ -59,6 +11,16 @@ macro_rules! day {
     };
 }
 
+use std::{fs::read_to_string, path::Path, time::Instant};
+
+mod day_1;
+mod day_2;
+mod day_3;
+mod day_4;
+mod day_5;
+mod day_6;
+mod day_7;
+
 fn main() {
     let mut days = vec![
         day!(day_1, "542619", "32858450"),
@@ -69,6 +31,7 @@ fn main() {
         day!(day_6, "6504", "3351"),
         day!(day_7, "", ""),
     ];
+
     for day in days.iter_mut() {
         println!("Day {}", day.num);
         let input_string = match read_to_string(Path::new(&format!("./data/day_{}.txt", day.num))) {
@@ -107,4 +70,42 @@ fn main() {
             parse_runtime.as_nanos() + part_1_runtime.as_nanos() + part_2_runtime.as_nanos()
         );
     }
+}
+
+trait Day {
+    fn parse_input(&mut self, input: &str) -> Result<(), String>;
+    fn part_1(&self) -> Result<String, String>;
+    fn part_2(&self) -> Result<String, String>;
+}
+
+struct DayRunner<'day> {
+    num: u8,
+    container: Box<dyn Day>,
+    part_1_expected: &'day str,
+    part_2_expected: &'day str,
+}
+
+fn validate_part(day: u8, part: u8, expected: &str, result: Result<String, String>) {
+    match result {
+        Ok(output) => {
+            if output != expected {
+                eprintln!(
+                        "\tIncorrect result for day {}, part {} returned:\n\t\tExpected: {}\n\t\tReturned: {}\n",
+                        day, part, expected, output,
+                    );
+            }
+        }
+        Err(e) => {
+            eprintln!("\tFailed to run day {}, part {}: {}\n", day, part, e);
+        }
+    };
+}
+
+fn day_num(module_name: &str) -> u8 {
+    module_name
+        .split('_')
+        .next_back()
+        .unwrap()
+        .parse::<u8>()
+        .unwrap()
 }
