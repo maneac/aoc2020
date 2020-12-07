@@ -29,7 +29,7 @@ fn main() {
         day!(day_4, "206", "123"),
         day!(day_5, "838", "714"),
         day!(day_6, "6504", "3351"),
-        day!(day_7, "", ""),
+        day!(day_7, "261", "3765"),
     ];
 
     for day in days.iter_mut() {

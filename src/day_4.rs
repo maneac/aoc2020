@@ -261,6 +261,17 @@ mod tests {
     use super::*;
 
     #[test]
+    fn test_parse_input() {
+        let input = "abc";
+
+        let expected = "abc";
+
+        let mut cont = Container::new();
+        assert_eq!(Ok(()), cont.parse_input(input));
+        assert_eq!(expected, cont.input);
+    }
+
+    #[test]
     fn test_part_1_example() {
         let input = Container {
             input: "ecl:gry pid:860033327 eyr:2020 hcl:#fffffd
