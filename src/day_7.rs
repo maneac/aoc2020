@@ -142,7 +142,7 @@ impl Day for Container {
                                             } else if entry.name.is_empty() {
                                                 entry.name = chunk.to_string();
                                             } else {
-                                                entry.name.push_str(" ");
+                                                entry.name.push(' ');
                                                 entry.name.push_str(chunk);
                                             }
                                             return Ok(entry);
