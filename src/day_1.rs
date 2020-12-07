@@ -1,4 +1,4 @@
-/* Source: https://adventofcode.com/2020/day1
+/* Source: https://adventofcode.com/2020/day/1
 --- Day 1: Report Repair ---
 
 After saving Christmas five years in a row, you've decided to take a vacation at a nice resort on a tropical island. Surely, Christmas will go on without you.
@@ -48,86 +48,74 @@ In your expense report, what is the product of the three entries that sum to 202
 
 */
 
-use std::{fs::read_to_string, path::Path};
+use crate::Day;
 
-pub fn run() -> crate::DayResponse {
-    let input_string = read_to_string(Path::new("./data/day_1.txt"))?;
-
-    let input = parse_input(&input_string);
-
-    let part1 = part_1(&input)?;
-
-    let part2 = part_2(&input)?;
-
-    Ok((part1.to_string(), part2.to_string()))
+pub struct Container {
+    input: Vec<i32>,
 }
 
-fn parse_input(input_string: &str) -> Vec<i32> {
-    let mut out = input_string.lines().fold(Vec::new(), |mut acc, line| {
-        let trimmed = line.trim();
-        if !trimmed.is_empty() {
-            acc.push(
-                line.trim()
-                    .parse::<i32>()
-                    .expect("Unable to parse line as integer"),
-            );
-        }
-        acc
-    });
-    out.sort_unstable();
-    out
+impl Container {
+    pub fn new() -> Self {
+        Self { input: Vec::new() }
+    }
 }
 
-fn part_1(input: &[i32]) -> Result<i32, &str> {
-    for outer_idx in 0..input.len() {
-        let outer = input[outer_idx];
-        for inner in input.iter().skip(outer_idx) {
-            if outer + inner == 2020 {
-                return Ok(outer * inner);
+impl Day for Container {
+    fn parse_input(&mut self, input: &str) -> Result<(), String> {
+        let out = input.lines().try_fold(Vec::new(), |mut acc, line| {
+            let trimmed = line.trim();
+            if !trimmed.is_empty() {
+                let line_res = line.trim().parse::<i32>();
+                match line_res {
+                    Ok(line) => acc.push(line),
+                    Err(e) => return Err(e),
+                }
             }
+            Ok(acc)
+        });
+        match out {
+            Ok(mut output) => {
+                output.sort_unstable();
+                self.input = output;
+                Ok(())
+            }
+            Err(e) => Err(e.to_string()),
         }
     }
 
-    Err("no matching pair found")
-}
-
-fn part_2(input: &[i32]) -> Result<i32, &str> {
-    for outer_idx in 0..input.len() {
-        let outer = input[outer_idx];
-        for middle_idx in outer_idx..input.len() {
-            let middle = input[middle_idx];
-            for inner in input.iter().skip(middle_idx) {
-                if outer + middle + inner == 2020 {
-                    return Ok(outer * middle * inner);
+    fn part_1(&self) -> Result<String, String> {
+        for outer_idx in 0..self.input.len() {
+            let outer = self.input[outer_idx];
+            for inner in self.input.iter().skip(outer_idx) {
+                if outer + inner == 2020 {
+                    return Ok((outer * inner).to_string());
                 }
             }
         }
+
+        Err("no matching pair found".to_string())
     }
 
-    Err("no matching triple found")
+    fn part_2(&self) -> Result<String, String> {
+        for outer_idx in 0..self.input.len() {
+            let outer = self.input[outer_idx];
+            for middle_idx in outer_idx..self.input.len() {
+                let middle = self.input[middle_idx];
+                for inner in self.input.iter().skip(middle_idx) {
+                    if outer + middle + inner == 2020 {
+                        return Ok((outer * middle * inner).to_string());
+                    }
+                }
+            }
+        }
+
+        Err("no matching triple found".to_string())
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_part1_examples() {
-        let input: [i32; 6] = [1721, 979, 366, 299, 675, 1456];
-
-        let expected = 514579;
-
-        assert_eq!(expected, part_1(&input).expect(""));
-    }
-
-    #[test]
-    fn test_part2_example() {
-        let input: [i32; 6] = [1721, 979, 366, 299, 675, 1456];
-
-        let expected = 241861950;
-
-        assert_eq!(expected, part_2(&input).expect(""))
-    }
 
     #[test]
     fn test_parse_input() {
@@ -140,6 +128,30 @@ mod tests {
 
         let expected = vec![1, 10, 20];
 
-        assert_eq!(expected, parse_input(&input));
+        let mut cont = Container::new();
+        assert_eq!(Ok(()), cont.parse_input(&input));
+        assert_eq!(expected, cont.input);
+    }
+
+    #[test]
+    fn test_part_1_examples() {
+        let input = Container {
+            input: vec![1721, 979, 366, 299, 675, 1456],
+        };
+
+        let expected = 514579.to_string();
+
+        assert_eq!(Ok(expected), input.part_1());
+    }
+
+    #[test]
+    fn test_part_2_example() {
+        let input = Container {
+            input: vec![1721, 979, 366, 299, 675, 1456],
+        };
+
+        let expected = 241861950.to_string();
+
+        assert_eq!(Ok(expected), input.part_2())
     }
 }

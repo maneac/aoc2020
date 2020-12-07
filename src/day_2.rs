@@ -44,18 +44,16 @@ How many passwords are valid according to the new interpretation of the policies
 
 */
 
-use std::{fs::read_to_string, path::Path};
+use crate::Day;
 
-pub fn run() -> crate::DayResponse {
-    let input_string = read_to_string(Path::new("./data/day_2.txt"))?;
+pub struct Container {
+    input: Vec<Entry>,
+}
 
-    let input = parse_input(&input_string);
-
-    let part1 = part_1(&input);
-
-    let part2 = part_2(&input);
-
-    Ok((part1.to_string(), part2.to_string()))
+impl Container {
+    pub fn new() -> Self {
+        Self { input: Vec::new() }
+    }
 }
 
 #[derive(Debug, PartialOrd, PartialEq)]
@@ -66,85 +64,92 @@ struct Entry {
     password: String,
 }
 
-fn parse_input(input: &str) -> Vec<Entry> {
-    let mut out = Vec::<Entry>::new();
-    for line in input.lines() {
-        let mut stage = 0;
-        out.push(line.trim().chars().fold(
-            Entry {
-                min: 0,
-                max: 0,
-                target: ' ',
-                password: String::new(),
-            },
-            |mut entry, chr| {
-                match stage {
-                    0 => {
-                        if chr == '-' {
-                            stage += 1;
-                            return entry;
+impl Day for Container {
+    fn parse_input(&mut self, input: &str) -> Result<(), String> {
+        let mut out = Vec::<Entry>::new();
+        for line in input.lines() {
+            let mut stage = 0;
+            out.push(line.trim().chars().fold(
+                Entry {
+                    min: 0,
+                    max: 0,
+                    target: ' ',
+                    password: String::new(),
+                },
+                |mut entry, chr| {
+                    match stage {
+                        0 => {
+                            if chr == '-' {
+                                stage += 1;
+                                return entry;
+                            }
+                            entry.min = (entry.min * 10)
+                                + chr.to_digit(10).expect("Unable to parse minimum as uint")
                         }
-                        entry.min = (entry.min * 10)
-                            + chr.to_digit(10).expect("Unable to parse minimum as uint")
+                        1 => {
+                            if chr == ' ' {
+                                stage += 1;
+                                return entry;
+                            }
+                            entry.max = (entry.max * 10)
+                                + chr.to_digit(10).expect("Unable to parse maximum as uint")
+                        }
+                        2 => {
+                            if chr == ' ' {
+                                stage += 1;
+                                return entry;
+                            }
+                            if entry.target == ' ' {
+                                entry.target = chr;
+                            }
+                        }
+                        _ => entry.password.push(chr),
                     }
-                    1 => {
-                        if chr == ' ' {
-                            stage += 1;
-                            return entry;
-                        }
-                        entry.max = (entry.max * 10)
-                            + chr.to_digit(10).expect("Unable to parse maximum as uint")
-                    }
-                    2 => {
-                        if chr == ' ' {
-                            stage += 1;
-                            return entry;
-                        }
-                        if entry.target == ' ' {
-                            entry.target = chr;
-                        }
-                    }
-                    _ => entry.password.push(chr),
-                }
-                entry
-            },
-        ));
+                    entry
+                },
+            ));
+        }
+        self.input = out;
+        Ok(())
     }
-    out
-}
 
-fn part_1(input: &[Entry]) -> usize {
-    input
-        .iter()
-        .filter(|entry| {
-            let ct = entry
-                .password
-                .chars()
-                .filter(|chr| chr.eq(&entry.target))
-                .count() as u32;
-            entry.min <= ct && ct <= entry.max
-        })
-        .count()
-}
-
-fn part_2(input: &[Entry]) -> usize {
-    input
-        .iter()
-        .filter(|entry| {
-            (entry
-                .password
-                .chars()
-                .nth(entry.min as usize - 1)
-                .expect("Invalid minimum bound for entry")
-                .eq(&entry.target))
-                != (entry
+    fn part_1(&self) -> Result<String, String> {
+        Ok(self
+            .input
+            .iter()
+            .filter(|entry| {
+                let ct = entry
                     .password
                     .chars()
-                    .nth(entry.max as usize - 1)
+                    .filter(|chr| chr.eq(&entry.target))
+                    .count() as u32;
+                entry.min <= ct && ct <= entry.max
+            })
+            .count()
+            .to_string())
+    }
+
+    fn part_2(&self) -> Result<String, String> {
+        Ok(self
+            .input
+            .iter()
+            .filter(|entry| {
+                (entry
+                    .password
+                    .chars()
+                    .nth(entry.min as usize - 1)
                     .expect("Invalid minimum bound for entry")
                     .eq(&entry.target))
-        })
-        .count()
+                    != (entry
+                        .password
+                        .chars()
+                        .nth(entry.max as usize - 1)
+                        .expect("Invalid minimum bound for entry")
+                        .eq(&entry.target))
+            })
+            .count()
+            .to_string())
+    }
 }
 
 #[cfg(test)]
@@ -159,6 +164,7 @@ mod tests {
             1-10 a: aa
             11-1 b: aa
             10-11 c: ab";
+
         let expected = vec![
             Entry {
                 min: 1,
@@ -198,60 +204,68 @@ mod tests {
             },
         ];
 
-        assert_eq!(expected, parse_input(&input));
+        let mut cont = Container::new();
+        assert_eq!(Ok(()), cont.parse_input(&input));
+        assert_eq!(expected, cont.input);
     }
 
     #[test]
-    fn test_part1_example() {
-        let input = vec![
-            Entry {
-                min: 1,
-                max: 3,
-                target: 'a',
-                password: String::from("abcde"),
-            },
-            Entry {
-                min: 1,
-                max: 3,
-                target: 'b',
-                password: String::from("cdefg"),
-            },
-            Entry {
-                min: 2,
-                max: 9,
-                target: 'c',
-                password: String::from("ccccccccc"),
-            },
-        ];
-        let expected = 2;
+    fn test_part_1_example() {
+        let input = Container {
+            input: vec![
+                Entry {
+                    min: 1,
+                    max: 3,
+                    target: 'a',
+                    password: String::from("abcde"),
+                },
+                Entry {
+                    min: 1,
+                    max: 3,
+                    target: 'b',
+                    password: String::from("cdefg"),
+                },
+                Entry {
+                    min: 2,
+                    max: 9,
+                    target: 'c',
+                    password: String::from("ccccccccc"),
+                },
+            ],
+        };
 
-        assert_eq!(expected, part_1(&input));
+        let expected = 2.to_string();
+
+        assert_eq!(Ok(expected), input.part_1());
     }
 
     #[test]
-    fn test_part2_example() {
-        let input = vec![
-            Entry {
-                min: 1,
-                max: 3,
-                target: 'a',
-                password: String::from("abcde"),
-            },
-            Entry {
-                min: 1,
-                max: 3,
-                target: 'b',
-                password: String::from("cdefg"),
-            },
-            Entry {
-                min: 2,
-                max: 9,
-                target: 'c',
-                password: String::from("ccccccccc"),
-            },
-        ];
-        let expected = 1;
+    fn test_part_2_example() {
+        let input = Container {
+            input: vec![
+                Entry {
+                    min: 1,
+                    max: 3,
+                    target: 'a',
+                    password: String::from("abcde"),
+                },
+                Entry {
+                    min: 1,
+                    max: 3,
+                    target: 'b',
+                    password: String::from("cdefg"),
+                },
+                Entry {
+                    min: 2,
+                    max: 9,
+                    target: 'c',
+                    password: String::from("ccccccccc"),
+                },
+            ],
+        };
 
-        assert_eq!(expected, part_2(&input));
+        let expected = 1.to_string();
+
+        assert_eq!(Ok(expected), input.part_2());
     }
 }

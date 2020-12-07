@@ -57,51 +57,53 @@ What is the ID of your seat?
 
 */
 
-use std::{fs::read_to_string, path::Path};
+use crate::Day;
 
-pub fn run() -> crate::DayResponse {
-    let input_string = read_to_string(Path::new("./data/day_5.txt"))?;
-
-    let input = parse_input(&input_string);
-
-    let part1 = part_1(&input);
-
-    let part2 = part_2(&input);
-
-    Ok((part1.to_string(), part2.to_string()))
+pub struct Container {
+    input: Vec<u16>,
 }
 
-fn parse_input(input: &str) -> Vec<u16> {
-    let mut output = vec![];
-    for line in input.trim().lines() {
-        output.push(
-            line.trim()
-                .char_indices()
-                .fold(0u16, |mut acc, (idx, chr)| {
-                    if chr == 'R' || chr == 'B' {
-                        acc |= 1 << (line.len() - 1 - idx);
-                    }
-                    acc
-                }),
-        );
+impl Container {
+    pub fn new() -> Self {
+        Self { input: Vec::new() }
     }
-    output.sort_unstable();
-    output
 }
 
-fn part_1(input: &[u16]) -> u16 {
-    *input.iter().next_back().unwrap()
-}
-
-fn part_2(input: &[u16]) -> u16 {
-    let mut prev = input[0] - 1;
-    for seat in input.iter() {
-        if *seat != (prev + 1) {
-            return prev + 1;
+impl Day for Container {
+    fn parse_input(&mut self, input: &str) -> Result<(), String> {
+        for line in input.trim().lines() {
+            self.input.push(
+                line.trim()
+                    .char_indices()
+                    .fold(0u16, |mut acc, (idx, chr)| {
+                        if chr == 'R' || chr == 'B' {
+                            acc |= 1 << (line.len() - 1 - idx);
+                        }
+                        acc
+                    }),
+            );
         }
-        prev = *seat;
+        self.input.sort_unstable();
+        Ok(())
     }
-    0
+
+    fn part_1(&self) -> Result<String, String> {
+        match self.input.iter().next_back() {
+            Some(val) => Ok(val.to_string()),
+            None => Err("no value found".to_string()),
+        }
+    }
+
+    fn part_2(&self) -> Result<String, String> {
+        let mut prev = self.input[0] - 1;
+        for seat in self.input.iter() {
+            if *seat != (prev + 1) {
+                return Ok((prev + 1).to_string());
+            }
+            prev = *seat;
+        }
+        Err("no seat found".to_string())
+    }
 }
 
 #[cfg(test)]
@@ -117,24 +119,30 @@ BBFFBBFRLL";
 
         let expected = vec![119, 567, 820];
 
-        assert_eq!(expected, parse_input(input));
+        let mut cont = Container::new();
+        assert_eq!(Ok(()), cont.parse_input(input));
+        assert_eq!(expected, cont.input);
     }
 
     #[test]
-    fn test_part1_example() {
-        let input = vec![119, 567, 820];
+    fn test_part_1_example() {
+        let input = Container {
+            input: vec![119, 567, 820],
+        };
 
-        let expected = 820;
+        let expected = 820.to_string();
 
-        assert_eq!(expected, part_1(&input));
+        assert_eq!(Ok(expected), input.part_1());
     }
 
     #[test]
-    fn test_part2() {
-        let input = vec![4, 5, 7];
+    fn test_part_2() {
+        let input = Container {
+            input: vec![4, 5, 7],
+        };
 
-        let expected = 6;
+        let expected = 6.to_string();
 
-        assert_eq!(expected, part_2(&input));
+        assert_eq!(Ok(expected), input.part_2());
     }
 }
