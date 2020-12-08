@@ -20,6 +20,7 @@ mod day_4;
 mod day_5;
 mod day_6;
 mod day_7;
+mod day_8;
 
 fn main() {
     let mut days = vec![
@@ -30,6 +31,7 @@ fn main() {
         day!(day_5, "838", "714"),
         day!(day_6, "6504", "3351"),
         day!(day_7, "261", "3765"),
+        day!(day_8, "1727", "552"),
     ];
 
     for day in days.iter_mut() {
