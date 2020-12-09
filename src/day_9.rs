@@ -148,7 +148,7 @@ impl Day for Container {
 
     fn part_1(&self) -> Result<String, String> {
         for idx in self.preamble_len..self.input.len() {
-            if let None = self.check_previous_preamble(idx) {
+            if self.check_previous_preamble(idx).is_none() {
                 return Ok(self.input[idx].to_string());
             }
         }
