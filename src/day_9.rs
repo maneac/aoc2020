@@ -121,7 +121,7 @@ impl Container {
         let target = self.input[idx];
         for i in (idx - self.preamble_len)..idx {
             let outer = self.input[i];
-            for j in i..idx {
+            for j in (i + 1)..idx {
                 if self.input[j] + outer == target {
                     return Some((i, j));
                 }
@@ -245,5 +245,43 @@ mod tests {
         let expected = 62.to_string();
 
         assert_eq!(Ok(expected), input.part_2());
+    }
+
+    #[test]
+    fn test_check_preamble() {
+        let inputs = vec![
+            (
+                Container {
+                    preamble_len: 3,
+                    input: vec![1, 2, 6, 4, 5],
+                    prev_num: RefCell::new(0),
+                },
+                3,
+                None,
+            ),
+            (
+                Container {
+                    preamble_len: 3,
+                    input: vec![1, 2, 3, 4, 5],
+                    prev_num: RefCell::new(0),
+                },
+                4,
+                Some((1, 2)),
+            ),
+        ];
+
+        inputs
+            .iter()
+            .enumerate()
+            .for_each(|(entry_idx, (container, idx, expected))| {
+                if let Some((a, b)) = container.check_previous_preamble(*idx) {
+                    assert!(expected.is_some(), "Input {}: {:?}", entry_idx, (a, b));
+                    if let Some((e_a, e_b)) = expected {
+                        assert_eq!((a, b), (*e_a, *e_b));
+                    }
+                } else {
+                    assert!(expected.is_none(), "Input {}", entry_idx);
+                }
+            });
     }
 }
