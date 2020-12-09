@@ -11,7 +11,11 @@ macro_rules! day {
     };
 }
 
-use std::{fs::read_to_string, path::Path, time::Instant};
+use std::{
+    fs::read_to_string,
+    path::Path,
+    time::{Duration, Instant},
+};
 
 mod day_1;
 mod day_2;
@@ -21,6 +25,7 @@ mod day_5;
 mod day_6;
 mod day_7;
 mod day_8;
+mod day_9;
 
 fn main() {
     let mut days = vec![
@@ -32,8 +37,10 @@ fn main() {
         day!(day_6, "6504", "3351"),
         day!(day_7, "261", "3765"),
         day!(day_8, "1727", "552"),
+        day!(day_9, "138879426", "23761694"),
     ];
 
+    let mut total_time = Duration::new(0, 0);
     for day in days.iter_mut() {
         println!("Day {}", day.num);
         let input_string = match read_to_string(Path::new(&format!("./data/day_{}.txt", day.num))) {
@@ -51,27 +58,33 @@ fn main() {
             continue;
         }
         let parse_runtime = start_parse.elapsed();
-        println!("\r\tParsed - {}ns", parse_runtime.as_nanos());
+        println!("\r\tParsed - {}", format_time(&parse_runtime));
 
         print!("\tPart 1...");
         let start_part_1 = Instant::now();
         let part_1 = day.container.part_1();
         let part_1_runtime = start_part_1.elapsed();
-        println!("\r\tPart 1 - {}ns", part_1_runtime.as_nanos());
+        println!("\r\tPart 1 - {}", format_time(&part_1_runtime));
         validate_part(day.num, 1, day.part_1_expected, part_1);
 
         print!("\tPart 2...");
         let start_part_2 = Instant::now();
         let part_2 = day.container.part_2();
         let part_2_runtime = start_part_2.elapsed();
-        println!("\r\tPart 2 - {}ns", part_2_runtime.as_nanos());
+        println!("\r\tPart 2 - {}", format_time(&part_2_runtime));
         validate_part(day.num, 2, day.part_2_expected, part_2);
 
-        println!(
-            "Total: {}ns\n",
-            parse_runtime.as_nanos() + part_1_runtime.as_nanos() + part_2_runtime.as_nanos()
-        );
+        let sub_time_total = parse_runtime + part_1_runtime + part_2_runtime;
+        println!("Day {} time: {}\n", day.num, format_time(&sub_time_total));
+
+        total_time = total_time.checked_add(sub_time_total).unwrap();
     }
+
+    println!(
+        "\nTotal time: {}.{:03}s\n",
+        total_time.as_secs(),
+        total_time.subsec_millis(),
+    );
 }
 
 trait Day {
@@ -110,4 +123,13 @@ fn day_num(module_name: &str) -> u8 {
         .unwrap()
         .parse::<u8>()
         .unwrap()
+}
+
+fn format_time(time: &Duration) -> String {
+    match time.as_nanos() {
+        0..=999 => format!("{}ns", time.as_nanos()),
+        1_000..=999_999 => format!("{}\u{b5}s", time.as_nanos() as f32 / 1000f32),
+        1_000_000..=999_999_999 => format!("{}ms", time.as_micros() as f32 / 1000f32),
+        _ => format!("{}.{:03}s", time.as_secs(), time.subsec_millis()),
+    }
 }
