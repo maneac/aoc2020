@@ -18,6 +18,7 @@ use std::{
 };
 
 mod day_1;
+mod day_10;
 mod day_2;
 mod day_3;
 mod day_4;
@@ -38,6 +39,7 @@ fn main() {
         day!(day_7, "261", "3765"),
         day!(day_8, "1727", "552"),
         day!(day_9, "138879426", "23761694"),
+        day!(day_10, "2450", "32396521357312"),
     ];
 
     let mut total_time = Duration::new(0, 0);
@@ -76,7 +78,6 @@ fn main() {
 
         let sub_time_total = parse_runtime + part_1_runtime + part_2_runtime;
         println!("Day {} time: {}\n", day.num, format_time(&sub_time_total));
-
         total_time = total_time.checked_add(sub_time_total).unwrap();
     }
 
