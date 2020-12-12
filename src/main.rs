@@ -20,6 +20,7 @@ use std::{
 mod day_1;
 mod day_10;
 mod day_11;
+mod day_12;
 mod day_2;
 mod day_3;
 mod day_4;
@@ -42,6 +43,7 @@ fn main() {
         day!(day_9, "138879426", "23761694"),
         day!(day_10, "2450", "32396521357312"),
         day!(day_11, "2273", "2064"),
+        day!(day_12, "362", "29895"),
     ];
 
     let mut total_time = Duration::new(0, 0);
