@@ -167,7 +167,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_parse_input() {
+    fn test_parse_example_input() {
         let input = "F10
 N3
 F7
@@ -180,6 +180,38 @@ F11";
             Action::Forward(7),
             Action::Rotate(Rotate::Right),
             Action::Forward(11),
+        ];
+
+        let mut cont = Container::new();
+
+        assert_eq!(Ok(()), cont.parse_input(input));
+        assert_eq!(expected, cont.actions);
+    }
+
+    #[test]
+    fn test_parse_input_extended() {
+        let input = "F10
+        N3
+        F7
+        R90
+        F11
+        L270
+        W5
+        S3
+        E19
+        R180";
+
+        let expected = vec![
+            Action::Forward(10),
+            Action::Shift(Compass::North(3)),
+            Action::Forward(7),
+            Action::Rotate(Rotate::Right),
+            Action::Forward(11),
+            Action::Rotate(Rotate::Right),
+            Action::Shift(Compass::West(5)),
+            Action::Shift(Compass::South(3)),
+            Action::Shift(Compass::East(19)),
+            Action::Rotate(Rotate::About),
         ];
 
         let mut cont = Container::new();
@@ -310,6 +342,41 @@ F11";
         };
 
         let expected = 286.to_string();
+
+        assert_eq!(Ok(expected), input.part_2());
+    }
+
+    #[test]
+    fn test_part_2() {
+        let input = Container {
+            actions: vec![
+                // (0, 0), (10, 1)
+                Action::Forward(10),
+                // (100, 10), (10, 1)
+                Action::Shift(Compass::North(3)),
+                // (100, 10), (10, 4)
+                Action::Forward(7),
+                // (170, 38), (10, 4)
+                Action::Rotate(Rotate::Right),
+                // (170, 38), (4, -10)
+                Action::Forward(11),
+                // (214, -72), (4, -10)
+                Action::Rotate(Rotate::Right),
+                // (214, -72), (-10, -4)
+                Action::Shift(Compass::West(5)),
+                // (214, -72), (-15, -4)
+                Action::Shift(Compass::South(3)),
+                // (214, -72), (-15, -7)
+                Action::Shift(Compass::East(19)),
+                // (214, -72), (4, -7)
+                Action::Rotate(Rotate::About),
+                // (214, -72), (-4, 7)
+                Action::Forward(10),
+                // (174, -2), (-4, 7)
+            ],
+        };
+
+        let expected = 176.to_string();
 
         assert_eq!(Ok(expected), input.part_2());
     }
