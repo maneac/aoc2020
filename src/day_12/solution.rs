@@ -37,7 +37,7 @@ enum Rotate {
 impl Day for Container {
     fn parse_input(&mut self, input: &str) -> Result<(), String> {
         input.trim().lines().try_for_each(|line| {
-            let instruction_parts = line.split_at(1);
+            let instruction_parts = line.trim().split_at(1);
             let instr_num = match instruction_parts.1.parse::<usize>() {
                 Ok(val) => val,
                 Err(e) => {
