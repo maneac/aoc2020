@@ -4,7 +4,7 @@ macro_rules! day {
     ($module:ident, $p1:tt,$p2:tt) => {
         DayRunner {
             num: day_num(stringify!($module)),
-            container: Box::new(<$module::Container>::new()),
+            container: Box::new(<$module::solution::Container>::new()),
             part_1_expected: $p1,
             part_2_expected: $p2,
         };
@@ -19,6 +19,7 @@ use std::{
 
 mod day_1;
 mod day_10;
+mod day_11;
 mod day_2;
 mod day_3;
 mod day_4;
@@ -40,6 +41,7 @@ fn main() {
         day!(day_8, "1727", "552"),
         day!(day_9, "138879426", "23761694"),
         day!(day_10, "2450", "32396521357312"),
+        day!(day_11, "2273", "2064"),
     ];
 
     let mut total_time = Duration::new(0, 0);
