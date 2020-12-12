@@ -206,6 +206,98 @@ F11";
     }
 
     #[test]
+    fn test_part_1() {
+        let tests = vec![
+            (
+                "forward no rotate",
+                Container {
+                    actions: vec![Action::Forward(10)],
+                },
+                Ok(10.to_string()),
+            ),
+            (
+                "shift, rotate left circle, forward",
+                Container {
+                    actions: vec![
+                        Action::Shift(Compass::West(1)),
+                        Action::Rotate(Rotate::Left),
+                        Action::Rotate(Rotate::Left),
+                        Action::Rotate(Rotate::Left),
+                        Action::Rotate(Rotate::Left),
+                        Action::Forward(1),
+                    ],
+                },
+                Ok(0.to_string()),
+            ),
+            (
+                "forward, rotate left, forward",
+                Container {
+                    actions: vec![
+                        Action::Forward(1),
+                        Action::Rotate(Rotate::Left),
+                        Action::Forward(10),
+                    ],
+                },
+                Ok(11.to_string()),
+            ),
+            (
+                "forward, rotate right, forward",
+                Container {
+                    actions: vec![
+                        Action::Forward(2),
+                        Action::Rotate(Rotate::Right),
+                        Action::Forward(10),
+                    ],
+                },
+                Ok(12.to_string()),
+            ),
+            (
+                "forward, rotate about, forward",
+                Container {
+                    actions: vec![
+                        Action::Forward(9),
+                        Action::Rotate(Rotate::About),
+                        Action::Forward(10),
+                    ],
+                },
+                Ok(1.to_string()),
+            ),
+            (
+                "forward, shift north",
+                Container {
+                    actions: vec![Action::Forward(1), Action::Shift(Compass::North(5))],
+                },
+                Ok(6.to_string()),
+            ),
+            (
+                "forward, shift south",
+                Container {
+                    actions: vec![Action::Forward(1), Action::Shift(Compass::South(7))],
+                },
+                Ok(8.to_string()),
+            ),
+            (
+                "forward, shift east",
+                Container {
+                    actions: vec![Action::Forward(5), Action::Shift(Compass::East(5))],
+                },
+                Ok(10.to_string()),
+            ),
+            (
+                "forward, shift west",
+                Container {
+                    actions: vec![Action::Forward(3), Action::Shift(Compass::West(2))],
+                },
+                Ok(1.to_string()),
+            ),
+        ];
+
+        for test in tests.iter() {
+            assert_eq!(test.2, test.1.part_1(), "\n  test: {}", test.0);
+        }
+    }
+
+    #[test]
     fn test_part_2_example() {
         let input = Container {
             actions: vec![
