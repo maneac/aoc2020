@@ -70,34 +70,27 @@ impl Day for Container {
     }
 
     fn part_2(&self) -> Result<String, String> {
-        let biggest_bus = self
-            .buses
-            .iter()
-            .enumerate()
-            .max_by(|(_, a), (_, b)| a.cmp(b))
-            .ok_or_else(|| "failed to find biggest bus".to_owned())?;
-        let limit = 1_000_000_000_000_000;
+        let mut step_size = self.buses[0] as u64;
+        let mut bus_idx = 1;
 
-        for bus_multiplier in (self.minimum / biggest_bus.1) + 1..limit {
-            let target = (biggest_bus.1 * bus_multiplier) - biggest_bus.0;
-            let attempt = self
-                .buses
-                .iter()
-                .enumerate()
-                .try_for_each::<_, Result<(), u8>>(|(idx, bus)| {
-                    if bus == &0 {
-                        return Ok(());
-                    }
-                    if (target + idx) % bus == 0 {
-                        return Ok(());
-                    }
-                    Err(0)
-                });
-            if attempt.is_ok() {
-                return Ok(target.to_string());
+        let mut target: u64 = 0;
+
+        while bus_idx < self.buses.len() {
+            let bus = self.buses[bus_idx] as u64;
+
+            if bus == 0 {
+                bus_idx += 1;
+                continue;
+            }
+
+            target += step_size;
+
+            if (target + bus_idx as u64) % bus == 0 {
+                step_size *= bus;
+                bus_idx += 1;
             }
         }
-        Err("failed to find timestamp before loop limit".to_string())
+        Ok(target.to_string())
     }
 }
 
