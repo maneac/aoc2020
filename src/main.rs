@@ -26,6 +26,7 @@ mod day_14;
 mod day_15;
 mod day_16;
 mod day_17;
+mod day_18;
 mod day_2;
 mod day_3;
 mod day_4;
@@ -54,6 +55,7 @@ fn main() {
         day!(day_15, "610", "1407"),
         day!(day_16, "25895", "5865723727753"),
         day!(day_17, "289", "2084"),
+        day!(day_18, "6811433855019", "129770152447927"),
     ];
 
     let mut total_time = Duration::new(0, 0);
