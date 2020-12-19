@@ -354,6 +354,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "takes a long time to run"]
     fn test_part_2_example() {
         let input = Container {
             input: vec![
