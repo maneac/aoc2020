@@ -4,8 +4,8 @@ impl Container {
     pub(super) fn assign_rules_to_fields(&self) -> Result<Vec<usize>, String> {
         // Remove all erroneous tickets
         let permissive_ruleset = self.rules.iter().fold(vec![0u128; 10], |mut acc, rule| {
-            for idx in 0..rule.1.len() {
-                acc[idx] |= rule.1[idx];
+            for (idx, ruleset) in acc.iter_mut().enumerate().take(rule.1.len()) {
+                *ruleset |= rule.1[idx];
             }
             acc
         });
@@ -25,7 +25,7 @@ impl Container {
             })
             .collect();
 
-        let mut possibilities = vec![(1 << self.rules.len()) - 1 as u128; self.rules.len()];
+        let mut possibilities = vec![(1 << self.rules.len()) - 1_u128; self.rules.len()];
 
         // Find possible mappings for each valid ticket field
         for ticket in valid_nearby_tickets {

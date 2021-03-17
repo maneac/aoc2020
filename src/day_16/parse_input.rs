@@ -97,7 +97,7 @@ impl Container {
 
 fn parse_ticket(ticket_numbers: &str) -> Result<Vec<u16>, String> {
     let parsed_numbers = ticket_numbers
-        .split(",")
+        .split(',')
         .try_fold::<_, _, Result<Vec<u16>, String>>(vec![], |mut acc, number| {
             let parsed_num = number
                 .parse::<u16>()

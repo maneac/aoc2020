@@ -30,8 +30,8 @@ impl Day for Container {
 
     fn part_1(&self) -> Result<String, String> {
         let permissive_ruleset = self.rules.iter().fold(vec![0u128; 10], |mut acc, rule| {
-            for idx in 0..rule.1.len() {
-                acc[idx] |= rule.1[idx];
+            for (idx, ruleset) in acc.iter_mut().enumerate().take(rule.1.len()) {
+                *ruleset |= rule.1[idx];
             }
             acc
         });
@@ -55,8 +55,8 @@ impl Day for Container {
 
         let mut departure_total: usize = 1;
 
-        for idx in 0..field_indices.len() {
-            if self.rules[field_indices[idx]].0.starts_with("departure") {
+        for (idx, &rule_idx) in field_indices.iter().enumerate() {
+            if self.rules[rule_idx].0.starts_with("departure") {
                 departure_total *= self.our_ticket[idx] as usize;
             }
         }

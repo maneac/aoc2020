@@ -54,19 +54,19 @@ impl Day for Container {
                     match parts[0] {
                         "byr" => {
                             let year = parts[1].parse::<usize>().unwrap_or(0);
-                            if year < 1920 || year > 2002 {
+                            if !(1920..=2002).contains(&year) {
                                 return false;
                             }
                         }
                         "iyr" => {
                             let year = parts[1].parse::<usize>().unwrap_or(0);
-                            if year < 2010 || year > 2020 {
+                            if !(2010..=2020).contains(&year) {
                                 return false;
                             }
                         }
                         "eyr" => {
                             let year = parts[1].parse::<usize>().unwrap_or(0);
-                            if year < 2020 || year > 2030 {
+                            if !(2020..=2030).contains(&year) {
                                 return false;
                             }
                         }
@@ -75,12 +75,12 @@ impl Day for Container {
                                 parts[1][..parts[1].len() - 2].parse::<usize>().unwrap_or(0);
                             match &parts[1][parts[1].len() - 2..] {
                                 "in" => {
-                                    if height < 59 || height > 76 {
+                                    if !(59..=76).contains(&height) {
                                         return false;
                                     }
                                 }
                                 "cm" => {
-                                    if height < 150 || height > 193 {
+                                    if !(150..=193).contains(&height) {
                                         return false;
                                     }
                                 }
