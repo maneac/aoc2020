@@ -22,7 +22,9 @@ impl Container {
         });
 
         for i in self.input.len()..limit {
-            let last = working_set.get(&last_spoken).unwrap();
+            let last = working_set
+                .get(&last_spoken)
+                .ok_or_else(|| "failed to get last spoken from working set".to_owned())?;
 
             match last.1 {
                 Some(last_idx) => {

@@ -119,7 +119,7 @@ impl Day for Container {
                         }
                     }
                 }
-                if neighbours < 2 || neighbours > 3 {
+                if !(2..=3).contains(&neighbours) {
                     delete_set.push(point_idx);
                 }
             }
@@ -212,7 +212,7 @@ impl Day for Container {
                         }
                     }
                 }
-                if neighbours < 2 || neighbours > 3 {
+                if !(2..=3).contains(&neighbours) {
                     delete_set.push(point_idx);
                 }
             }

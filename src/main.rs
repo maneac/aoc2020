@@ -37,6 +37,7 @@ mod day_8;
 mod day_9;
 
 fn main() {
+    let args: Vec<String> = std::env::args().collect();
     let mut days = vec![
         day!(day_1, "542619", "32858450"),
         day!(day_2, "424", "747"),
@@ -58,6 +59,14 @@ fn main() {
         day!(day_18, "6811433855019", "129770152447927"),
     ];
 
+    if args.len() > 1 {
+        days.retain(|day| day.num == (args[1].parse::<u8>().unwrap()));
+    }
+
+    run(days);
+}
+
+fn run(mut days: Vec<DayRunner>) {
     let mut total_time = Duration::new(0, 0);
     for day in days.iter_mut() {
         println!("Day {}", day.num);
