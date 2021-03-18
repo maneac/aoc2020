@@ -64,3 +64,51 @@ impl Day for Container {
         Ok(departure_total.to_string())
     }
 }
+
+#[cfg(test)]
+mod examples {
+    use super::*;
+
+    #[test]
+    fn part_one() {
+        let input = "class: 1-3 or 5-7
+row: 6-11 or 33-44
+seat: 13-40 or 45-50
+
+your ticket:
+7,1,14
+
+nearby tickets:
+7,3,47
+40,4,50
+55,2,20
+38,6,12";
+
+        let mut c = Container::new();
+
+        assert_eq!(c.parse_input(input), Ok(()));
+
+        assert_eq!(c.part_1(), Ok(71.to_string()));
+    }
+
+    #[test]
+    fn part_two() {
+        let input = "class: 0-1 or 4-19
+departure row: 0-5 or 8-19
+seat: 0-13 or 16-19
+
+your ticket:
+11,12,13
+
+nearby tickets:
+3,9,18
+15,1,5
+5,14,9";
+
+        let mut c = Container::new();
+
+        assert_eq!(c.parse_input(input), Ok(()));
+
+        assert_eq!(c.part_2(), Ok(11.to_string()));
+    }
+}
